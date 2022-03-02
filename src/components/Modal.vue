@@ -35,7 +35,7 @@ export default {
 .modal {
   display: block; /* Hidden by default */
   position: fixed; /* Stay in place */
-  padding-top: 65px; /* Location of the box */
+  padding-top: 85px; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -43,6 +43,7 @@ export default {
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  z-index: 99;
 }
 
 /* Modal Content */

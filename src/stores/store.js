@@ -45,7 +45,7 @@ const store = createStore({
         await axios({
           url: user.USER_INFO,
           method: 'get',
-          headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          headers: {'Authorization': 'Bearer ' + token,
                     'Accept': 'application/json'}
         }).then( res => {
           commit('setInfo', res.data);
@@ -68,7 +68,7 @@ const store = createStore({
       async getCustomerInfo({ commit}, { id }){
         await axios({
           method: 'GET',
-          url: customer.BASE + id,
+          url: customer.SHOW + id,
           headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
                     'Accept': 'application/json'}
         }).then(res => {
@@ -77,20 +77,20 @@ const store = createStore({
           console.log(err);
         })
       },
-      async getListCustomer({commit}){
+      async getListCustomer({commit},{ page, search, type}){
         await axios({
-          method: 'GET',
-          url : customer.BASE,
+          method: 'POST',
+          url : customer.BASE + page,
           headers:{
               'Authorization': 'Bearer ' + localStorage.getItem('token'),
               'Accept': 'application/json'
             },
             data:{
-              name: '',
-              email: '',
-              phone: '',
+              search: search,
+              type: type,
             }
         }).then(res => {
+          console.log(res.data);
           commit('setListCustomer', res.data);
         }).catch(err => {
           console.log(err);

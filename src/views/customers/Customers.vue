@@ -28,7 +28,7 @@
                           <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Điện thoại</label>
                             <div class="col-sm-9">
-                              <input type="text" class="form-control" v-model="customer.phone"/>
+                              <input type="text" class="form-control" @keypress="isNumber($event)" v-model="customer.phone"/>
                             </div>
                           </div>
                         </div>
@@ -93,10 +93,18 @@
             <div class="page-header">
               <h3 class="page-title"> Danh sách khách hàng </h3>
               <nav aria-label="breadcrumb">
-                <div>
-                        <button type="button" @click="showModal = !showModal" class="btn btn-sm btn-gradient-info btn-icon-text"><i class="mdi mdi-account-plus btn-icon-prepend"></i> Thêm mới
+                <div class="btn-action">
+                        <button type="button" @click="toggleModal()" class="btn btn-sm btn-gradient-info btn-icon-text"><i class="mdi mdi-account-plus btn-icon-prepend"></i> Thêm mới
                         </button>
-                      </div>
+                        <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-outline-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                          Hành động
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                          <a class="dropdown-item" href="#">Gán sale</a>
+                          <a class="dropdown-item" href="#">Dropdown link</a>
+                        </div>
+                </div>
+                
               </nav>
             </div>
             <div class="row">
@@ -106,17 +114,17 @@
                     <div class="fill">
                           <div class="form-group-fill">
                             <div class="input-group form-search">
-                              <input type="text" class="form-control form-control-sm" placeholder="Tên ,email khách hàng" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                              <input type="text" class="form-control form-control-sm" v-model="search" placeholder="Tên ,email khách hàng" aria-label="Recipient's username" aria-describedby="basic-addon2">
                               <div class="input-group-append">
-                                <button class="btn btn-sm btn-gradient-info form-control-sm" type="button">Tìm kiếm</button>
+                                <button class="btn btn-sm btn-gradient-info form-control-sm" @click="toggleSearch()" type="button">Tìm kiếm</button>
                               </div>
                             </div>
                           </div>
                           <div class="form-group-fill">
                             <label class="fill-label">Loại khách hàng</label>
                             <div class="fill-select">
-                              <select class="form-control form-control-sm">
-                                <option seleted> -- Tất cả -- </option>
+                              <select class="form-control form-control-sm" v-model="type_of_customer">
+                                <option value="-1" seleted> -- Tất cả -- </option>
                                 <option v-for="(type, index) in typeCustomer" :key="index" :value ="type.id">{{ type.type}}</option>
                               </select>
                             </div>
@@ -150,8 +158,8 @@
                             <th> Ngày cập nhật </th>
                           </tr>
                         </thead>
-                        <tbody v-if="customers">
-                          <tr v-for="(customer,index) in customers" :key="index">
+                        <tbody v-if="customers && customers.data.length > 0">
+                          <tr v-for="(customer,index) in customers.data" :key="index">
                             <td><input type="checkbox" id="checkall"> {{ index+1 }}</td>
                             <td class="view">
                               <router-link :to="{ name:'customer_detail', params:{ 'id': customer.id} }">
@@ -180,7 +188,25 @@
                         </tbody>
                       </table>
                     </div>
-                    
+                  </div>
+                  <div class="panigate" v-if="customers">
+                    <nav aria-label="Page navigation example">
+                      <ul class="pagination justify-content-end">
+                        <li class="page-item" v-if="currentPage != 1">
+                          <a class="page-link" @click.prevent="currentPage--" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                          </a>
+                        </li>
+                        <li class="page-item" v-for="page in customers.last_page" :key="page" :class="{ 'active' : currentPage == page}">
+                          <a class="page-link" @click.prevent="currentPage = page" href="#">{{ page }}</a>
+                        </li>
+                        <li class="page-item" v-if="currentPage != customers.last_page">
+                          <a class="page-link" @click.prevent="currentPage++" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
                   </div>
                 </div>
               </div>
@@ -211,13 +237,16 @@ export default {
     data() {
       return {
         showModal: false,
+        currentPage: 1,
+        search: '',
+        type_of_customer: -1,
         customer:{
           name: '',
           email: '',
           phone: '',
           gender: 'Nam',
           address: '',
-          type_of_customer: '1',
+          type_of_customer_id: '1',
         },
       }
     },
@@ -227,10 +256,18 @@ export default {
       },
       customers(){
         return this.$store.state.customers;
+      },
+    },
+    watch:{
+      currentPage(){
+        this.getList(this.currentPage, this.search, this.type_of_customer);
+      },
+      type_of_customer(){
+        this.getList(this.currentPage, this.search, this.type_of_customer);
       }
     },
     created(){
-      this.$store.dispatch('getListCustomer');
+      this.getList(this.currentPage, this.search, this.type_of_customer);
       this.$store.dispatch('getTypeCustomer');
     },
     methods: {
@@ -240,10 +277,29 @@ export default {
       toggleModal(){
         this.showModal = !this.showModal;
       },
+      isNumber: function (evt) {
+        evt = evt ? evt : window.event;
+        var charCode = evt.which ? evt.which : evt.keyCode;
+        if (
+          charCode > 31 &&
+          (charCode < 48 || charCode > 57) &&
+          charCode !== 43
+        ) {
+          evt.preventDefault();
+        } else {
+          return true;
+        }
+      },
+      toggleSearch(){
+        this.getList(this.currentPage, this.search, this.type_of_customer);
+      },
+      getList(page,search,type){
+        this.$store.dispatch('getListCustomer',{ page: page, search: search, type: type });
+      },
       async create(){
         await axios({
           method: 'POST',
-          url: customer.BASE,
+          url: customer.CREATE,
           headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
           'Accept': 'application/json'
@@ -251,15 +307,27 @@ export default {
           data: this.customer,
         }).then( res => {
           console.log(res);
-          toggleModal();
+          this.toggleModal();
           cuteAlert({
             type: "success",
 						title: "Thêm mới khách hàng",
 						message: "Thêm mới khách hàng thành công!",
 						buttonText: "Xác nhận",
           })
+          this.getList(this.currentPage, this.search, this.type_of_customer);
         }).catch(err => {
           console.log(err);
+          let msg = '';
+          Object.keys(err.data.errors).forEach(function(key) {
+            msg += key + ": " + err.data.errors[key][0] + '\r\n';
+          });
+          cuteToast({
+              type: "error",
+              message:  err.data.message + '\r\n' + msg,
+              timer: 5000
+            })
+
+            console.log(msg);
         })
       },
     },
@@ -292,6 +360,21 @@ td{
 .bd{
   border-bottom: 1px gainsboro solid;
   margin-bottom: 2rem;
+}
+.panigate{
+  margin: 0 3rem 1rem 3rem;
+  padding: 0.5rem 1rem;
+}
+.btn-action{
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-action button{
+  margin: 0.1rem 0.5rem;
+}
+.dropdown-menu{
+  margin: 0.5rem;
 }
 
 </style>
