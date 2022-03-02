@@ -178,7 +178,7 @@
 					</div>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#" @click="toggleToDoList()">
+					<a class="nav-link" href="#" @click.prevent="toggleToDoList()">
 						<i class="mdi mdi mdi-format-list-numbered"></i>
 					</a>
 				</li>

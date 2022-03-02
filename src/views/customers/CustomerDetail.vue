@@ -297,31 +297,6 @@ export default {
     toggleEditDefault() {
       this.editDefault = !this.editDefault;
     },
-
-    async update() {
-      await axios({
-        method: "PUT",
-        url: customer.BASE + this.customer.id,
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-          Accept: "application/json",
-        },
-        data: this.customer,
-      })
-        .then((res) => {
-          console.log(res);
-          cuteAlert({
-            type: "success",
-            title: "Cập nhật thông tin",
-            message: "Cập nhật thông tin khách hàng thành công",
-            buttonText: "Xác nhận",
-          });
-          this.toggleEditDefault();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
   },
 };
 </script>
