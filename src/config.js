@@ -10,6 +10,7 @@ export const staff = {
     CREATE_USER : base_url + 'staff/create_staff',
 };
 export const customer = {
+    LIST : base_url + 'customers/',
     BASE : base_url + 'customer/',
     GET_TYPE: base_url + 'customer/get_type',
 }

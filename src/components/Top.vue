@@ -46,9 +46,9 @@
 						</div>
 					</a>
 					<div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-						<a class="dropdown-item" href="#">
-							<i class="mdi mdi-cached mr-2 text-success"></i> Activity Log
-						</a>
+						<router-link class="dropdown-item" :to="{name: 'account-detail'}">
+							<i class="mdi mdi-cached mr-2 text-success"></i> Thông tin cá nhân
+						</router-link>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="#" @click="signOut()">
 							<i class="mdi mdi-logout mr-2 text-primary"></i> Signout

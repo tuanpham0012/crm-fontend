@@ -45,7 +45,6 @@ export default{
 /* @import './assets/vendors/mdi/css/materialdesignicons.min.css';
 @import './assets/vendors/css/vendor.bundle.base.css';*/
 @import './assets/css/myStyle.css'; 
-
 .container-fluid{
   width: auto;
 }

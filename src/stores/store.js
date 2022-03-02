@@ -79,8 +79,8 @@ const store = createStore({
       },
       async getListCustomer({commit}){
         await axios({
-          method: 'GET',
-          url : customer.BASE,
+          method: 'POST',
+          url : customer.LIST,
           headers:{
               'Authorization': 'Bearer ' + localStorage.getItem('token'),
               'Accept': 'application/json'

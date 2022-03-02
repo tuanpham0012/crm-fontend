@@ -14,6 +14,8 @@ import Customers from '../views/customers/Customers.vue';
 import CustomerDetail from '../views/customers/CustomerDetail.vue';
 import CustomerUpdate from '../views/customers/CustomerUpdate.vue';
 
+import AccountDetail from '../views/account/Detail.vue';
+
 import store from '../stores/store';
 
 import {user} from '../config';
@@ -65,6 +67,12 @@ const routes = [
         path: '/customers/update/:id',
         name: 'customer_update',
         component: CustomerUpdate,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/account/detail',
+        name: 'account-detail',
+        component: AccountDetail,
         meta: { requiresAuth: true },
     }
   ]
