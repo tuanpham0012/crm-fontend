@@ -1,7 +1,7 @@
 <template>
     <!-- modal -->
           <div id="myModal" class="modal" @click.self="onCloseModal()">
-            <div class="modal-content modal-large">
+            <div class="modal-content modal-dialog-scrollable" :class=" size ? 'modal-large' : 'modal-small' ">
               <div class="modal-header">
                 <span class="modal-title">{{ title }}</span>
                 <span class="close" @click="onCloseModal()">&times;</span>
@@ -21,6 +21,10 @@ export default {
         title:{
             type: String,
             required: true,
+        },
+        size:{
+          type: Boolean,
+          default: true,
         }
     },
     methods: {
@@ -45,7 +49,6 @@ export default {
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   z-index: 99;
 }
-
 /* Modal Content */
 .modal-content {
   background-color: #fefefe;
@@ -53,15 +56,12 @@ export default {
   padding: 20px;
   border: 1px solid #888;
 }
-
 .modal-large{
-  width: 80%;
+  width: 85%;
 }
-
 .modal-small{
-  width: 55%;
+  width: 60%;
 }
-
 .modal-header{
   padding: 0.5rem 1rem;
   margin-bottom: 0.5rem;
@@ -70,6 +70,9 @@ export default {
 .modal-title{
   margin: 0 auto;
   font-size: 1.5rem;
+}
+.modal-body{
+  padding: 0;
 }
 .close {
   color: #9896ac;
@@ -80,7 +83,6 @@ export default {
   font-weight: bold;
   border-radius: 50%;
 }
-
 .close:hover,
 .close:focus {
   color: rgb(255, 0, 0);

@@ -1,15 +1,18 @@
 import { createStore } from 'vuex';
 import axios from 'redaxios';
-import {user, customer} from '../config';
+import * as url from '../config';
 
 const store = createStore({
     state () {
       return {
+        loading: false,
         showToDoList: false,
         userInfo: null,
         typeOfCustomer: null,
         customers: null,
         customer: null,
+        myCustomerList: null,
+        departments: null,
       }
     },
     getters:{
@@ -30,6 +33,9 @@ const store = createStore({
       toggleToDoList(state){
         state.showToDoList = !state.showToDoList;
       },
+      setListDepartment(state, listDepartment){
+        state.departments = listDepartment;
+      },
       setTypeCustomer(state, type){
         state.typeOfCustomer = type;
       },
@@ -38,24 +44,44 @@ const store = createStore({
       },
       setCustomerInfo(state, customerPayload){
         state.customer = customerPayload;
-      } 
+      },
+      setMyCustomerList(state, customerPayload){
+        state.myCustomerList = customerPayload;
+      },
+      isLoading(state, value){
+        state.loading = value;
+      }
     },
     actions:{
       async getInfo({ commit}, {token}){
         await axios({
-          url: user.USER_INFO,
+          url: url.user.USER_INFO,
           method: 'get',
           headers: {'Authorization': 'Bearer ' + token,
                     'Accept': 'application/json'}
         }).then( res => {
+          console.log(res.data);
           commit('setInfo', res.data);
+        }).catch( err => {
+          console.log(err);
+        })
+      },
+      async getListDepartment({ commit}){
+        await axios({
+          url: url.departments.BASE,
+          method: 'get',
+          headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                    'Accept': 'application/json'}
+        }).then( res => {
+          console.log(res.data);
+          commit('setListDepartment', res.data);
         }).catch( err => {
           console.log(err);
         })
       },
       async getTypeCustomer({ commit}){
         await axios({
-          url: customer.GET_TYPE,
+          url: url.customer.GET_TYPE,
           method: 'get',
           headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
                     'Accept': 'application/json'}
@@ -66,21 +92,25 @@ const store = createStore({
         })
       },
       async getCustomerInfo({ commit}, { id }){
+        commit('isLoading', true);
         await axios({
           method: 'GET',
-          url: customer.SHOW + id,
+          url: url.customer.SHOW + id,
           headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
                     'Accept': 'application/json'}
         }).then(res => {
+          console.log(res.data);
           commit('setCustomerInfo', res.data)
+          commit('isLoading', false);
         }).catch(err => {
           console.log(err);
         })
       },
       async getListCustomer({commit},{ page, search, type}){
+        commit('isLoading', true)
         await axios({
           method: 'POST',
-          url : customer.BASE + page,
+          url : url.customer.BASE + page,
           headers:{
               'Authorization': 'Bearer ' + localStorage.getItem('token'),
               'Accept': 'application/json'
@@ -92,10 +122,32 @@ const store = createStore({
         }).then(res => {
           console.log(res.data);
           commit('setListCustomer', res.data);
+          commit('isLoading', false)
         }).catch(err => {
           console.log(err);
         })
-      }
+      },
+      async getMyCustomerList({commit},{ page, search, type}){
+        commit('isLoading', true)
+        await axios({
+          method: 'POST',
+          url : url.customer.MY_CUSTOMER,
+          headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              'Accept': 'application/json'
+            },
+          data:{
+            search: search,
+            type: type,
+          }
+        }).then(res => {
+          console.log(res.data);
+          commit('setMyCustomerList', res.data);
+          commit('isLoading', false)
+        }).catch(err => {
+          console.log(err);
+        })
+      },
     }
   })
 

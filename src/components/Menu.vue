@@ -29,7 +29,7 @@
               </a>
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
-                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Buttons</a></li>
+                  <li class="nav-item"> <router-link class="nav-link" :to="{ name : 'my-customer'}" >Khách hàng phụ trách</router-link></li>
                   <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li>
                 </ul>
               </div>
@@ -107,17 +107,12 @@ export default {
 		}
 	},
 	methods:{
-		signOut(){
-			localStorage.removeItem('token');
-			localStorage.removeItem('userInfo');
-			this.$router.push({name: 'login'});
-		}
 	}
 };
 </script>
 <style scoped>
 .sidebar{
-  height: 111vh;
+  height: 150vh;
   overflow: auto; 
 }
 

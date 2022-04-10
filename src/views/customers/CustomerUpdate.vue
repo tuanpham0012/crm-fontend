@@ -17,7 +17,7 @@
               @click="update()"
               class="btn btn-sm btn-gradient-success btn-icon-text"
             >
-              <i class="mdi mdi-check-all"></i> Xác nhận
+              <i class="mdi mdi-check-all"></i> Cập nhật
             </button>
           </div>
         </nav>
@@ -229,7 +229,8 @@
                   <h4 class="title">Thông tin liên hệ</h4>
                 </div>
                 <div>
-                  <div></div>
+                  <div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -327,7 +328,7 @@ export default {
     },
     async update() {
       await axios({
-        method: "PUT",
+        method: "PATCH",
         url: customer.UPDATE + this.customer.id,
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),

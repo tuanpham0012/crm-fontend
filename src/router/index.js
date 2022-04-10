@@ -13,8 +13,10 @@ import Departments from '../views/departments/Departments.vue';
 import Customers from '../views/customers/Customers.vue';
 import CustomerDetail from '../views/customers/CustomerDetail.vue';
 import CustomerUpdate from '../views/customers/CustomerUpdate.vue';
+import MyCustomerList from '../views/customers/MyCustomerList.vue';
 
 import AccountDetail from '../views/account/Detail.vue';
+import AccountUpdate from '../views/account/Update.vue';
 
 import store from '../stores/store';
 
@@ -59,20 +61,33 @@ const routes = [
     },
     {
         path: '/customers/detail/:id',
-        name: 'customer_detail',
+        name: 'customer-detail',
         component: CustomerDetail,
         meta: { requiresAuth: true },
     },
     {
         path: '/customers/update/:id',
-        name: 'customer_update',
+        name: 'customer-update',
         component: CustomerUpdate,
         meta: { requiresAuth: true },
     },
     {
+        path: '/customers/my_customer_list',
+        name: 'my-customer',
+        component: MyCustomerList,
+        meta: { requiresAuth: true },
+    },
+    
+    {
         path: '/account/detail',
         name: 'account-detail',
         component: AccountDetail,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/account/update',
+        name: 'account-update',
+        component: AccountUpdate,
         meta: { requiresAuth: true },
     }
   ]
@@ -82,33 +97,33 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach( (to, from, next) =>{
-    if(to.name !== 'login' && to.matched.some((record) => record.meta.requiresAuth)){
-        if(!localStorage.getItem('token')){
-            next({
-                name: 'login'
-            });
-        }else{
-            axios.get(user.USER_INFO,
-                { headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),}
-            }).then(res =>{
-                next();
-            }).catch(err =>{
-                localStorage.removeItem('token');
-                next({ name: 'login'});
-            })
-        }
-    }else if(to.name == 'login'){
-        if(localStorage.getItem('token')){
-            next({
-                name: from.name,
-            });
-        }else{
-            next();
-        }
-    }else{
-        next();
-    }
-})
+// router.beforeEach( (to, from, next) =>{
+//     if(to.name !== 'login' && to.matched.some((record) => record.meta.requiresAuth)){
+//         if(!localStorage.getItem('token')){
+//             next({
+//                 name: 'login'
+//             });
+//         }else{
+//             axios.get(user.USER_INFO,
+//                 { headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),}
+//             }).then(res =>{
+//                 next();
+//             }).catch(err =>{
+//                 localStorage.removeItem('token');
+//                 next({ name: 'login'});
+//             })
+//         }
+//     }else if(to.name == 'login'){
+//         if(localStorage.getItem('token')){
+//             next({
+//                 name: from.name,
+//             });
+//         }else{
+//             next();
+//         }
+//     }else{
+//         next();
+//     }
+// })
 
 export default router;
