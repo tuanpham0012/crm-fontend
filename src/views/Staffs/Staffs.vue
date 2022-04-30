@@ -152,6 +152,7 @@
                       <table class="table table-hover">
                         <thead>
                           <tr>
+                            <th> # </th>
                             <th> User </th>
                             <th> Họ tên </th>
                             <th> Email </th>
@@ -165,7 +166,8 @@
                         </thead>
                         <tbody v-if="staffs.length > 0">
                           <tr v-for="(staff,index) in staffs" :key="index">
-                            <td class="avatar">
+                            <td>{{ index + 1}}</td>
+                            <td>
                               <img src="../../assets/images/faces/user.jpg" alt="" />
                             </td>
                             <td> {{ staff.name }} </td>
@@ -278,6 +280,9 @@ export default {
 }
 </script>
 <style scoped>
+td{
+  padding: 0.5rem;
+}
 .fill {
   display: flex;
   justify-content: flex-start;
@@ -285,7 +290,6 @@ export default {
   flex-wrap: wrap;
   margin: 2rem 0.5rem;
 }
-
 .form-group-fill {
   width: auto;
   display: flex;
@@ -294,20 +298,17 @@ export default {
   margin: 0.45rem 0.7rem;
   align-items: center;
 }
-
 .fill-label {
   margin: 0 2rem;
 }
-
 .fill-select {
   margin: 0 2rem;
 }
-
 .fill-select select {
   padding: 0.4rem 1.2rem;
   color: rgb(20, 20, 22);
 }
-.avatar img:hover {
+td img:hover {
   cursor: pointer;
   transform: scale(1.2);
 }

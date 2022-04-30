@@ -15,7 +15,7 @@
     </div>
 </template>
 <script>
-import CustomerNoteVue from "../../components/NoteComponent.vue";
+import CustomerNoteVue from "../../components/NoteCustomerComponent.vue";
 export default {
     components:{
       CustomerNoteVue,

@@ -188,7 +188,7 @@
                       </span>
                     </div>
                     <div class="row-info">
-                      <span class="row-title">Loại khách hàng :</span>
+                      <span class="row-title">Mối quan hệ :</span>
                       <span class="row-content">
                         {{
                           customer.type_customer && customer.type_customer.type
@@ -199,7 +199,14 @@
                     </div>
                     <div class="row-info">
                       <span class="row-title">Sản phẩm quan tâm :</span>
-                      <span class="row-content">Tuấn</span>
+                      <div class="col-sm-7">
+                        <ul style="margin-top:1rem;" v-if="typeOfProduct">
+                            <li v-for="(type, index) in typeOfProduct" :key="index">
+                                {{ type.type}}
+                            </li>
+                          </ul>
+                          <span class="updating" v-else>Đang cập nhật</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -348,7 +355,7 @@
               <div class="card-content">
                 <div>
                   <div class="tab-content">
-                    <customer-tab-vue></customer-tab-vue>
+                    <customer-tab-vue :customer="customer"></customer-tab-vue>
                   </div>
                 </div>
               </div>
@@ -383,7 +390,10 @@ export default {
   },
   computed: {
     typeCustomer() {
-      return this.$store.state.typeOfCustomer;
+      return this.$store.state.baseData ? this.$store.state.baseData.type_of_customer : null;
+    },
+    typeOfProduct(){
+      return this.$store.state.baseData ? this.$store.state.baseData.type_of_product : null;
     },
     customer() {
       return this.$store.state.customer;

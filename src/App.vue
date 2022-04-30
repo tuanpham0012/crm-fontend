@@ -1,7 +1,8 @@
 <template>
+<!-- :class="{ 'look-scrollbar' : showModal}" -->
   <div class="container-scroller">
           <TopNav :class="{'hidden' : componentName == 'login'}"/>
-          <div class="container-fluid page-body-wrapper">
+          <div class="container-fluid page-body-wrapper" :class="{ 'look-scrollbar' : showModal}">
               <Menu v-if="componentName != 'login'"/>
               <router-view></router-view>
         </div>
@@ -22,19 +23,24 @@ export default{
     data() {
       return {
         componentName: '',
+        showModal:false,
+      }
+    },
+    computed:{
+      showModal(){
+        return this.$store.state.isShowModal;
       }
     },
     created(){
       if(localStorage.getItem('token')) this.$store.dispatch('getInfo', { token: localStorage.getItem('token') });
+      this.$store.dispatch('getBaseData');
     },
   	watch:{
         $route (to){
           this.componentName = to.name;
+          console.log(this.$store.state.loading);
         },
     },
-    mounted(){
-      console.log('abcabc');
-    }
   
 }
 
@@ -45,5 +51,9 @@ export default{
 @import './assets/css/resetcss.css';
 #app{
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.look-scrollbar{
+  overflow: hidden;
+  position: fixed;
 }
 </style>

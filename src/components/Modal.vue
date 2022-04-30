@@ -27,6 +27,13 @@ export default {
           default: true,
         }
     },
+    created(){
+      this.$store.commit("showModal", true );
+    },
+    beforeUnmount() {
+      this.$store.commit("showModal",false);
+      console.log("close");
+    },
     methods: {
         onCloseModal(){
             this.$emit("closeModal");
@@ -35,7 +42,7 @@ export default {
 }
 </script>
 <style scoped>
-    
+
 .modal {
   display: block; /* Hidden by default */
   position: fixed; /* Stay in place */
@@ -53,11 +60,12 @@ export default {
 .modal-content {
   background-color: #fefefe;
   margin: auto;
-  padding: 20px;
+  padding: 0.1rem;
   border: 1px solid #888;
+  min-height: 60%;
 }
 .modal-large{
-  width: 85%;
+  width: 90%;
 }
 .modal-small{
   width: 60%;
@@ -72,7 +80,8 @@ export default {
   font-size: 1.5rem;
 }
 .modal-body{
-  padding: 0;
+  padding: 0.2rem;
+  background-color: #f0f0f7;
 }
 .close {
   color: #9896ac;

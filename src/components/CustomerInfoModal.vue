@@ -102,15 +102,39 @@
                   </div>
                 </div>
                 <div>
-                  <div class="row-info">
-                    <span class="row-title"
-                      ><i class="mdi mdi-map-marker"></i
-                    ></span>
-                    <span class="row-content">
-                      {{
-                        customer.address ? customer.address : "Đang cập nhật"
-                      }}
-                    </span>
+                  <div class="col-md-12">
+                    <div class="form-group row">
+                      <label class="col-sm-5 col-form-label">Mối quan hệ</label>
+                      <div class="col-sm-7">
+                        <select
+                          class="form-control"
+                          v-if="typeCustomer"
+                          v-model="customer.type_of_customer_id"
+                          @change="UpdateTypeOfCustomer(customer.id)"
+                        >
+                          <option
+                            v-for="(type, index) in typeCustomer"
+                            :key="index"
+                            :value="type.id"
+                          >
+                            {{ type.type }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12" >
+                    <div class="form-group">
+                      <label class="col-sm-9 col-form-label">Mặt hàng quan tâm: </label>
+                      <div class="col-sm-12 interest">
+                        <ul v-if="customer.interest && customer.interest.length > 0">
+                            <li v-for="(type, index) in customer.interest" :key="index">
+                                {{ type.type_of_product.type}}
+                            </li>
+                          </ul>
+                          <span class="updating" v-else>Đang cập nhật</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -124,7 +148,10 @@
             <div class="card-content">
               <div>
                 <div class="tab-content">
-                  <note-component :id="customer.id"></note-component>
+                  <note-component
+                    :notes="customer.customer_notes"
+                    :customer_id="customer.id"
+                  ></note-component>
                 </div>
               </div>
             </div>
@@ -135,9 +162,13 @@
   </div>
 </template>
 <script>
-import NoteComponent from "./NoteComponent.vue";
+import NoteComponent from "./NoteCustomerComponent.vue";
 import moment from "moment/min/moment-with-locales";
 moment.locale("vi");
+
+import axios from "redaxios";
+import * as url from "../config";
+
 export default {
   props: {
     customer: {
@@ -150,9 +181,38 @@ export default {
   components: {
     NoteComponent,
   },
+  computed: {
+    typeCustomer() {
+      return this.$store.state.baseData ? this.$store.state.baseData.type_of_customer : null;
+    },
+  },
+  created() {
+  },
   methods: {
     dateTimeFormat(time) {
       return moment(time).format("LL");
+    },
+    async UpdateTypeOfCustomer(id) {
+      await axios({
+        method: "PATCH",
+        url: url.customer.UPDATE + id,
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+          Accept: "application/json",
+        },
+        data: this.customer,
+      })
+        .then((res) => {
+          console.log(res);
+          cuteToast({
+            type: "success",
+            message: res.data.message,
+            timer: 3000,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
@@ -237,5 +297,15 @@ ol {
   border-bottom: 1px solid #f2edf3;
   margin: 0.2rem;
   padding-bottom: 1rem;
+}
+.interest li{
+  list-style-type: circle;
+  padding: 0 0.5rem;
+  border-bottom: 1px solid #6a718038;
+  font-size: 0.875rem;
+}
+.interest li:hover{
+  cursor: pointer;
+  background-color: rgba(230, 233, 240, 0.664);
 }
 </style>

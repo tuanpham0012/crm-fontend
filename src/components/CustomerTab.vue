@@ -4,18 +4,28 @@
        </ul>
        <div>
          <div class="tab-content">
-           <NoteComponent :id="id" v-if="tabIndex == 1" />
+           <div v-if="customer">
+              <NoteComponent :notes="customer.customer_notes" :customer_id="customer.id" v-if="tabIndex == 1" />
+           </div>
            <ContactHistoryComponent v-if="tabIndex == 4" />
          </div>
        </div>
 </template>
 <script>
-import NoteComponent from "./NoteComponent.vue";
+import NoteComponent from "./NoteCustomerComponent.vue";
 import ContactHistoryComponent from "./ContactHistoryComponent.vue";
 export default {
     components:{
       NoteComponent,
       ContactHistoryComponent,
+    },
+    props:{
+      customer:{
+        type: Object,
+        default:function(){
+          return null;
+        }
+      }
     },
     data() {
         return {

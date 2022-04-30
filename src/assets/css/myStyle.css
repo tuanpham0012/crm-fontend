@@ -4,7 +4,7 @@
   align-content: center;
   align-items: center;
   flex-wrap: wrap;
-  margin: 2rem 0.5rem;
+  margin: 1rem 0.5rem;
 }
 
 .form-group-fill {
@@ -63,6 +63,18 @@
   font-size: 1.345rem;
   padding: 0 1rem;
   margin: 0 0.5rem;
+}
+.row .card .card-body{
+  padding: 1.2rem;
+}
+.table-responsive > .table-bordered {
+  border: 1px solid #f5f5f5;
+}
+
+.updating{
+  color: rgb(255, 0, 0);
+  font-size: 0.875rem;
+  font-style: italic;
 }
 
 ::-webkit-scrollbar {

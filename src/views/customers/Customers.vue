@@ -23,7 +23,7 @@
                           <input
                             type="text"
                             class="form-control"
-                            v-model="customer.name"
+                            v-model="customer_create.name"
                           />
                         </div>
                       </div>
@@ -35,7 +35,7 @@
                           <input
                             type="email"
                             class="form-control"
-                            v-model="customer.email"
+                            v-model="customer_create.email"
                           />
                         </div>
                       </div>
@@ -50,7 +50,7 @@
                             type="text"
                             class="form-control"
                             @keypress="isNumber($event)"
-                            v-model="customer.phone"
+                            v-model="customer_create.phone"
                           />
                         </div>
                       </div>
@@ -62,7 +62,7 @@
                           <input
                             type="text"
                             class="form-control"
-                            v-model="customer.address"
+                            v-model="customer_create.address"
                           />
                         </div>
                       </div>
@@ -76,7 +76,7 @@
                           <input
                             type="date"
                             class="form-control"
-                            v-model="customer.date_of_birth"
+                            v-model="customer_create.date_of_birth"
                           />
                         </div>
                       </div>
@@ -87,7 +87,7 @@
                         <div class="col-sm-9">
                           <select
                             class="form-control"
-                            v-model="customer.gender"
+                            v-model="customer_create.gender"
                           >
                             <option value="Nam">Nam</option>
                             <option value="Nữ">Nữ</option>
@@ -98,10 +98,14 @@
                     <div class="col-md-6">
                       <div class="form-group row">
                         <label class="col-sm-3 col-form-label"
-                          >Loại khách hàng</label
+                          >Mối quan hệ</label
                         >
                         <div class="col-sm-9">
-                          <select class="form-control" v-if="typeCustomer">
+                          <select
+                            class="form-control"
+                            v-if="typeCustomer"
+                            v-model="customer_create.type_of_customer_id"
+                          >
                             <option
                               v-for="(type, index) in typeCustomer"
                               :key="index"
@@ -120,8 +124,80 @@
                           <input
                             type="text"
                             class="form-control"
-                            v-model="customer.address"
+                            v-model="customer_create.address"
                           />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label
+                          for="exampleInputEmail2"
+                          class="col-sm-3 col-form-label"
+                          >Sản phẩm quan tâm</label
+                        >
+                        <div class="col-sm-6">
+                          <select
+                            class="form-control"
+                            style="margin-top: 1rem"
+                            v-model="interest"
+                            v-if="typeOfProduct"
+                          >
+                            <option value="-1" disabled>
+                              -- Chọn mặt hàng quan tâm --
+                            </option>
+                            <option
+                              v-for="(type, index) in typeOfProduct"
+                              :key="index"
+                              :value="type.id"
+                              :disabled="
+                                customer_create.interest.findIndex(
+                                  (x) => x.type_of_product_id == type.id
+                                ) >= 0
+                              "
+                            >
+                              {{ type.type }}
+                            </option>
+                          </select>
+                        </div>
+                        <div
+                          class="col-sm-3"
+                          style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                          "
+                        >
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-gradient-info"
+                            :disabled="interest == -1"
+                            @click="addInterestProduct()"
+                          >
+                            Thêm
+                          </button>
+                        </div>
+
+                        <div class="col-sm-12">
+                          <ul
+                            class="list-interest"
+                            v-if="
+                              customer_create.interest && customer_create.interest.length > 0
+                            "
+                          >
+                            <li
+                              v-for="(type, index) in customer_create.interest"
+                              :key="index"
+                            >
+                              <button
+                                type="button"
+                                @click="removeInterest(index)"
+                                class="close"
+                              >
+                                &times;</button
+                              >{{ type.type_of_product.type }}
+                            </li>
+                          </ul>
                         </div>
                       </div>
                     </div>
@@ -132,6 +208,9 @@
           </div>
         </template>
         <template v-slot:footer>
+          <button type="button" class="btn btn-info" @click="create()">
+            Xác nhận
+          </button>
           <button
             type="button"
             class="btn btn-secondary"
@@ -139,11 +218,12 @@
           >
             Đóng
           </button>
-          <button type="button" class="btn btn-primary" @click="create()">
-            Xác nhận
-          </button>
         </template>
       </base-modal>
+
+      <!-- Gán người phụ trách -->
+
+
       <base-modal
         v-if="modalLead"
         title="Gán người phụ trách"
@@ -235,18 +315,26 @@
           </button>
         </template>
       </base-modal>
+
+
+
+<!-- Thông tin khách hàng -->
+
       <base-modal
         v-if="modalCustomerInfo"
         title="Thông tin khách hàng"
-        :size="false"
+        :size="true"
         @closeModal="toggleModalCustomerInfo()"
       >
         <template v-slot:body>
-          <customer-info-modal :customer="customer_info" />
+          <customer-info-modal v-if="customer" :customer="customer" />
         </template>
-        <template v-slot:footer>
-        </template>
+        <template v-slot:footer> </template>
       </base-modal>
+
+
+<!-- Hết Thông tin khách hàng -->
+
       <div class="page-header">
         <h3 class="page-title">Danh sách khách hàng</h3>
         <nav aria-label="breadcrumb">
@@ -307,7 +395,7 @@
                   </div>
                 </div>
                 <div class="form-group-fill">
-                  <label class="fill-label">Loại khách hàng</label>
+                  <label class="fill-label">Quan hệ</label>
                   <div class="fill-select">
                     <select
                       class="form-control form-control-sm"
@@ -329,8 +417,7 @@
                   <div class="fill-select">
                     <select class="form-control form-control-sm">
                       <option>-- Tất cả --</option>
-                      <option>Đang hoạt động</option>
-                      <option>Tạm nghỉ</option>
+                      <option>Đang sử dụng</option>
                       <option>Đã xóa</option>
                     </select>
                   </div>
@@ -373,7 +460,10 @@
                         />
                         {{ index + 1 }}
                       </td>
-                      <td class="view" @click="toggleModalCustomerInfo(customer.id)">
+                      <td
+                        class="view"
+                        @click="toggleModalCustomerInfo(customer.id)"
+                      >
                         <i class="mdi mdi-eye"></i>
                       </td>
                       <td>
@@ -492,18 +582,19 @@ export default {
       assignNew: true,
       department_id: -1,
       staff_id: -1,
-      customer_info: null,
       currentPage: 1,
       search: "",
       type_of_customer: -1,
-      customer: {
+      customer_create: {
         name: "",
         email: "",
         phone: "",
         gender: "Nam",
+        interest: [],
         address: "",
         type_of_customer_id: "1",
       },
+      interest: -1,
       staffs: [],
       select: false,
       selected: [],
@@ -512,10 +603,22 @@ export default {
   },
   computed: {
     typeCustomer() {
-      return this.$store.state.typeOfCustomer;
+      return this.$store.state.baseData
+        ? this.$store.state.baseData.type_of_customer
+        : null;
+    },
+    typeOfProduct() {
+      return this.$store.state.baseData
+        ? this.$store.state.baseData.type_of_product
+        : null;
     },
     customers() {
-      return this.$store.state.customers;
+      return this.$store.state.customers
+        ? this.$store.state.customers.customers
+        : null;
+    },
+    customer() {
+      return this.$store.state.customer;
     },
     departments() {
       return this.$store.state.departments;
@@ -535,10 +638,12 @@ export default {
       this.staffs = department[0].staff_of_department;
       this.staff_id = -1;
     },
+    interests() {
+      console.log(this.interests);
+    },
   },
   created() {
     this.getList(this.currentPage, this.search, this.type_of_customer);
-    this.$store.dispatch("getTypeCustomer");
     this.$store.dispatch("getListDepartment");
   },
   methods: {
@@ -579,12 +684,10 @@ export default {
     toggleModalLead() {
       this.modalLead = !this.modalLead;
     },
-    toggleModalCustomerInfo(id){
+    toggleModalCustomerInfo(id) {
       this.modalCustomerInfo = !this.modalCustomerInfo;
-      console.log(this.modalCustomerInfo);
-      if(id != null){
-      this.customer_info = this.customers.data.find(item => item.id === id);
-        console.log(this.customer_info);
+      if (id != null) {
+        this.$store.dispatch("getCustomerInfo", { id: id , upload: true});
       }
     },
     isNumber: function (evt) {
@@ -610,6 +713,19 @@ export default {
         type: type,
       });
     },
+    addInterestProduct() {
+      this.customer_create.interest.push({
+            type_of_product_id: this.interest,
+            type_of_product:{
+              type: this.typeOfProduct.find( (x) => x.id == this.interest).type,
+            } 
+          });
+          this.interest = -1;
+          console.log(this.customer_create.interest);
+    },
+    removeInterest(index){
+      this.customer.interest.splice(index, 1);
+    },
     async create() {
       await axios({
         method: "POST",
@@ -618,31 +734,20 @@ export default {
           Authorization: "Bearer " + localStorage.getItem("token"),
           Accept: "application/json",
         },
-        data: this.customer,
+        data: this.customer_create,
       })
         .then((res) => {
-          console.log(res);
-          this.toggleModal();
-          cuteAlert({
+          console.log(res.data);
+          this.toggleModalCreate();
+          cuteToast({
             type: "success",
-            title: "Thêm mới khách hàng",
-            message: "Thêm mới khách hàng thành công!",
-            buttonText: "Xác nhận",
+            message: res.data.message,
+            timer: 5000,
           });
           this.getList(this.currentPage, this.search, this.type_of_customer);
         })
         .catch((err) => {
           console.log(err);
-          let msg = "";
-          Object.keys(err.data.errors).forEach(function (key) {
-            msg += key + ": " + err.data.errors[key][0] + "\r\n";
-          });
-          cuteToast({
-            type: "error",
-            message: err.data.message + "\r\n" + msg,
-            timer: 5000,
-          });
-          console.log(msg);
         });
     },
     async assignSale() {
@@ -673,7 +778,7 @@ export default {
 </script>
 <style scoped>
 td {
-  padding: 0.4rem 0.7rem;
+  padding: 0.1rem 0.5rem;
 }
 .updating {
   color: rgb(252, 31, 31);
@@ -729,5 +834,26 @@ td {
 }
 .dropdown-menu {
   margin: 0.5rem;
+}
+.list-interest{
+  margin: 0.5rem 0 0 1.5rem;
+  background-color: rgb(221, 221, 235);
+  padding: 0.5rem 0.2rem;
+  border-radius: 8px;
+}
+.list-interest li{
+  background-color: rgb(255, 255, 255);
+  width: max-content;
+  padding-left: 0.7rem;
+  padding-right: 0.3rem;
+  border-radius: 10px 0 10px 0;
+  margin: 0.5rem 1rem;
+}
+.list-interest button{
+  font-size: 1.4rem;
+  margin-left: 1rem;
+}
+.list-interest button:hover{
+  transform: scale(1.1);
 }
 </style>

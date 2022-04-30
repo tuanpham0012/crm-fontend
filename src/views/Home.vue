@@ -19,8 +19,11 @@
 									<span>Khách hàng</span>
 								</div>
 								<div class="short">
-									<i class="mdi mdi-table-large"></i>
-									<span>Công việc</span>
+									<router-link :to="{name : 'tasks'}">
+										<i class="mdi mdi-table-large"></i>
+										<span>Công việc</span>
+									</router-link>
+									
 								</div>
 								<div class="short">
 									<i class="mdi mdi-ungroup"></i>

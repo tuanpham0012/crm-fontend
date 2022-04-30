@@ -18,6 +18,8 @@ import MyCustomerList from '../views/customers/MyCustomerList.vue';
 import AccountDetail from '../views/account/Detail.vue';
 import AccountUpdate from '../views/account/Update.vue';
 
+import Tasks from '../views/tasks/Tasks.vue';
+
 import store from '../stores/store';
 
 import {user} from '../config';
@@ -72,13 +74,6 @@ const routes = [
         meta: { requiresAuth: true },
     },
     {
-        path: '/customers/my_customer_list',
-        name: 'my-customer',
-        component: MyCustomerList,
-        meta: { requiresAuth: true },
-    },
-    
-    {
         path: '/account/detail',
         name: 'account-detail',
         component: AccountDetail,
@@ -89,7 +84,19 @@ const routes = [
         name: 'account-update',
         component: AccountUpdate,
         meta: { requiresAuth: true },
-    }
+    },
+    {
+        path: '/personal/tasks',
+        name: 'tasks',
+        component: Tasks,
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/personal/my_customer_list',
+        name: 'my-customer',
+        component: MyCustomerList,
+        meta: { requiresAuth: true },
+    },
   ]
 
 const router = createRouter({

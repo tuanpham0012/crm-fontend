@@ -114,13 +114,23 @@
                       class="col-sm-3 col-form-label"
                       >Sản phẩm quan tâm</label
                     >
-                    <div class="col-sm-9">
-                      <input
-                        type="email"
-                        class="form-control"
-                        id="exampleInputEmail2"
-                        placeholder="Email"
-                      />
+                    <div class="col-sm-6">
+                      <select class="form-control" style="margin-top:1rem;" v-model="interest" v-if="typeOfProduct">
+                            <option value="-1" disabled> -- Chọn mặt hàng quan tâm -- </option>
+                            <option v-for="(type, index) in typeOfProduct" :key="index" :value="type.id" :disabled="customer.interest.findIndex( x => x.type_of_product_id == type.id) >= 0">
+                                {{ type.type}}
+                            </option>
+                      </select>
+                      
+                    </div>
+                    <div class="col-sm-3" style="display: flex;justify-content: space-between;align-items: center;">
+                      <button type="button" class="btn btn-sm btn-gradient-info" :disabled="interest == -1" @click="addInterestProduct()">Thêm</button>
+                    </div>
+                    
+                    <div class="col-sm-12">
+                      <ul class="list-interest" v-if="customer.interest && customer.interest.length > 0">
+                        <li v-for="(type, index) in customer.interest" :key="index"><button type="button" @click="removeInterest(index)" class="close">&times;</button>{{type.type_of_product.type}}</li>
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -164,12 +174,14 @@
                         placeholder="Thêm số điện thoại"
                       />
                     </div>
-                    <button
-                      class="btn btn-sm btn-gradient-success"
-                      @click="addPhone()"
-                    >
-                      Thêm
-                    </button>
+                    <div class="col-sm-3" style="display: flex;justify-content: space-between;align-items: center;">
+                      <button
+                        class="btn btn-sm btn-gradient-info"
+                        @click="addPhone()"
+                      >
+                        Thêm
+                      </button>
+                    </div>
                     <div class="list-phones">
                       <div
                         class="phone"
@@ -264,18 +276,21 @@ export default {
   data() {
     return {
       phone: "",
+      interest: -1,
     };
   },
   computed: {
     typeCustomer() {
-      return this.$store.state.typeOfCustomer;
+      return this.$store.state.baseData ? this.$store.state.baseData.type_of_customer : null;
+    },
+    typeOfProduct(){
+      return this.$store.state.baseData ? this.$store.state.baseData.type_of_product : null;
     },
     customer() {
       return this.$store.state.customer;
     },
   },
   created() {
-    this.$store.dispatch("getTypeCustomer");
     this.$store.dispatch("getCustomerInfo", { id: this.$route.params.id });
   },
   methods: {
@@ -319,6 +334,20 @@ export default {
           this.phone = "";
         }
       }
+    },
+    addInterestProduct() {
+      this.customer.interest.push({
+            customer_id: this.customer.id,
+            type_of_product_id: this.interest,
+            type_of_product:{
+              type: this.typeOfProduct.find( (x) => x.id == this.interest).type,
+            } 
+          });
+          this.interest = -1;
+          console.log(this.customer.interest);
+    },
+    removeInterest(index){
+      this.customer.interest.splice(index, 1);
     },
     goBack() {
       this.$router.go(-1);
@@ -429,5 +458,26 @@ export default {
 }
 .btn-close:hover {
   background-color: rgb(255, 255, 255);
+}
+.list-interest{
+  margin: 0.5rem 0 0 1.5rem;
+  background-color: rgb(221, 221, 235);
+  padding: 0.5rem 0.2rem;
+  border-radius: 8px;
+}
+.list-interest li{
+  background-color: rgb(255, 255, 255);
+  width: max-content;
+  padding-left: 0.7rem;
+  padding-right: 0.3rem;
+  border-radius: 10px 0 10px 0;
+  margin: 0.5rem 1rem;
+}
+.list-interest button{
+  font-size: 1.4rem;
+  margin-left: 1rem;
+}
+.list-interest button:hover{
+  transform: scale(1.1);
 }
 </style>

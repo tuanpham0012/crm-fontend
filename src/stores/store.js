@@ -7,12 +7,16 @@ const store = createStore({
       return {
         loading: false,
         showToDoList: false,
+        isShowModal: false,
+
         userInfo: null,
-        typeOfCustomer: null,
+        baseData: null,
         customers: null,
         customer: null,
         myCustomerList: null,
         departments: null,
+        tasks: null,
+        taskInfo: null,
       }
     },
     getters:{
@@ -36,8 +40,8 @@ const store = createStore({
       setListDepartment(state, listDepartment){
         state.departments = listDepartment;
       },
-      setTypeCustomer(state, type){
-        state.typeOfCustomer = type;
+      setBaseData(state, data){
+        state.baseData = data;
       },
       setListCustomer(state, listCustomer){
         state.customers = listCustomer;
@@ -48,8 +52,17 @@ const store = createStore({
       setMyCustomerList(state, customerPayload){
         state.myCustomerList = customerPayload;
       },
+      setTaskList(state, tasks){
+        state.tasks = tasks;
+      },
+      setTaskInfo(state, task){
+        state.taskInfo = task;
+      },
       isLoading(state, value){
         state.loading = value;
+      },
+      showModal(state, value){
+        state.isShowModal = value;
       }
     },
     actions:{
@@ -79,20 +92,22 @@ const store = createStore({
           console.log(err);
         })
       },
-      async getTypeCustomer({ commit}){
+      async getBaseData({ commit}){
         await axios({
-          url: url.customer.GET_TYPE,
+          url: url.home.GET_BASE_DATA,
           method: 'get',
-          headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                    'Accept': 'application/json'}
         }).then( res => {
-          commit('setTypeCustomer', res.data);
+          console.log(res.data);
+          commit('setBaseData', res.data);
         }).catch( err => {
           console.log(err);
         })
       },
-      async getCustomerInfo({ commit}, { id }){
-        commit('isLoading', true);
+      async getCustomerInfo({ commit}, { id, upload}){
+        if(upload){
+          commit('isLoading', true);
+          commit('setCustomerInfo', null);
+        }
         await axios({
           method: 'GET',
           url: url.customer.SHOW + id,
@@ -104,6 +119,7 @@ const store = createStore({
           commit('isLoading', false);
         }).catch(err => {
           console.log(err);
+          commit('isLoading', false);
         })
       },
       async getListCustomer({commit},{ page, search, type}){
@@ -122,10 +138,10 @@ const store = createStore({
         }).then(res => {
           console.log(res.data);
           commit('setListCustomer', res.data);
-          commit('isLoading', false)
         }).catch(err => {
           console.log(err);
         })
+        commit('isLoading', false)
       },
       async getMyCustomerList({commit},{ page, search, type}){
         commit('isLoading', true)
@@ -143,11 +159,51 @@ const store = createStore({
         }).then(res => {
           console.log(res.data);
           commit('setMyCustomerList', res.data);
-          commit('isLoading', false)
         }).catch(err => {
           console.log(err);
         })
+        commit('isLoading', false)
       },
+      async getTasks({commit}, {search} ){
+        commit('isLoading', true)
+        await axios({
+          method: 'POST',
+          url : url.tasks.BASE,
+          headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              'Accept': 'application/json'
+            },
+          data:{
+            search: search,
+          }
+        }).then( res =>{
+          console.log(res.data);
+          commit('setTaskList', res.data);
+        }).catch( err =>{
+          console.log(err);
+        })
+        commit('isLoading', false)
+      },
+      async getTaskInfo({commit}, {id, upload} ){
+        if(upload){
+          commit('isLoading', true)
+          commit('setTaskInfo', null);
+        }
+        await axios({
+          method: 'GET',
+          url : url.tasks.SHOW + id,
+          headers:{
+              'Authorization': 'Bearer ' + localStorage.getItem('token'),
+              'Accept': 'application/json'
+            },
+        }).then( res =>{
+          console.log(res.data);
+          commit('setTaskInfo', res.data);
+        }).catch( err =>{
+          console.log(err);
+        })
+        commit('isLoading', false)
+      }
     }
   })
 

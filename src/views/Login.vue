@@ -155,11 +155,10 @@ export default {
 					this.$router.push({ name: 'home' });
 				})
 				.catch((err) => {
-					this.loading = false;
 					this.code = err.status;
 					this.msg = err.data.message
 					console.log(this.code + ' - ' + this.msg);
-					
+					this.loading = !this.loading;
 				});
 		},
 	},

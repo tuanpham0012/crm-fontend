@@ -30,7 +30,8 @@
               <div class="collapse" id="ui-basic">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <router-link class="nav-link" :to="{ name : 'my-customer'}" >Khách hàng phụ trách</router-link></li>
-                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li>
+                  <li class="nav-item"> <router-link class="nav-link" :to="{ name : 'tasks'}">Công việc của tôi</router-link></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Nhóm</a></li>
                 </ul>
               </div>
             </li>

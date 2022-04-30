@@ -208,7 +208,7 @@
                           <tr v-for="(item, index) in myCustomers.data" :key="index">
                             <td><input type="checkbox" v-model="selected" :value="item.customer.id" @change="updateCheckall()"> {{ index+1 }}</td>
                             <td class="view">
-                              <router-link :to="{ name:'customer_detail', params:{ 'id': item.customer.id} }">
+                              <router-link :to="{ name:'customer_detail', params:{ id: item.customer.id} }">
                                 <i class="mdi mdi-eye"></i>
                               </router-link>
                                 
@@ -290,7 +290,7 @@ export default {
   },
   computed: {
     typeCustomer() {
-      return this.$store.state.typeOfCustomer;
+      return this.$store.state.baseData ? this.$store.state.baseData.type_of_customer : null;
     },
     myCustomers() {
       return this.$store.state.myCustomerList;
@@ -309,7 +309,6 @@ export default {
   },
   created() {
       this.getList(this.currentPage, this.search, this.type_of_customer);
-      this.$store.dispatch('getTypeCustomer');
       this.$store.dispatch('getListDepartment');
   },
   methods: {
