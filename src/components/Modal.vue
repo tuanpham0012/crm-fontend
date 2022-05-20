@@ -1,6 +1,6 @@
 <template>
-    <!-- modal -->
-          <div id="myModal" class="modal" @click.self="onCloseModal()">
+    <!-- modal @click.self="onCloseModal()" -->
+          <div id="myModal" class="modal" >
             <div class="modal-content modal-dialog-scrollable" :class=" size ? 'modal-large' : 'modal-small' ">
               <div class="modal-header">
                 <span class="modal-title">{{ title }}</span>
@@ -31,7 +31,7 @@ export default {
       this.$store.commit("showModal", true );
     },
     beforeUnmount() {
-      this.$store.commit("showModal",false);
+      this.$store.commit("showModal", false);
       console.log("close");
     },
     methods: {

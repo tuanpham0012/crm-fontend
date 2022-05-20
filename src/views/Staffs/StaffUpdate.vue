@@ -30,17 +30,17 @@
                 <div class="card-title">
                   <h4 class="title">Thông tin cơ bản</h4>
                 </div>
-                <div class="card-body" v-if="customer">
+                <div class="card-body" v-if="staff">
                   <div class="form-group row">
                     <label for="name" class="col-sm-3 col-form-label"
-                      >Tên khách hàng:</label
+                      >Tên nhân viên:</label
                     >
                     <div class="col-sm-9">
                       <input
                         type="text"
                         class="form-control"
                         id="name"
-                        v-model="customer.name"
+                        v-model="staff.name"
                         placeholder="Tên khách hàng"
                       />
                     </div>
@@ -54,7 +54,7 @@
                         type="text"
                         class="form-control"
                         id="address"
-                        v-model="customer.address"
+                        v-model="staff.address"
                         placeholder="Địa chỉ"
                       />
                     </div>
@@ -67,7 +67,7 @@
                       <select
                         class="form-control"
                         id="gender"
-                        v-model="customer.gender"
+                        v-model="staff.gender"
                       >
                         <option>Nam</option>
                         <option>Nữ</option>
@@ -83,56 +83,11 @@
                         type="date"
                         class="form-control"
                         id="birth"
-                        v-model="customer.date_of_birth"
+                        v-model="staff.date_of_birth"
                       />
                     </div>
                   </div>
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label"
-                      >Mối quan hệ</label
-                    >
-                    <div class="col-sm-9">
-                      <select
-                        class="form-control"
-                        v-if="typeCustomer"
-                        v-model="customer.type_of_customer_id"
-                      >
-                        <option
-                          v-for="(type, index) in typeCustomer"
-                          :key="index"
-                          :value="type.id"
-                        >
-                          {{ type.type }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="form-group row">
-                    <label
-                      for="exampleInputEmail2"
-                      class="col-sm-3 col-form-label"
-                      >Sản phẩm quan tâm</label
-                    >
-                    <div class="col-sm-6">
-                      <select class="form-control" style="margin-top:1rem;" v-model="interest" v-if="typeOfProduct">
-                            <option value="-1" disabled> -- Chọn mặt hàng quan tâm -- </option>
-                            <option v-for="(type, index) in typeOfProduct" :key="index" :value="type.id" :disabled="customer.interest.findIndex( x => x.type_of_product_id == type.id) >= 0">
-                                {{ type.type}}
-                            </option>
-                      </select>
-                      
-                    </div>
-                    <div class="col-sm-3" style="display: flex;justify-content: space-between;align-items: center;">
-                      <button type="button" class="btn btn-sm btn-gradient-info" :disabled="interest == -1" @click="addInterestProduct()">Thêm</button>
-                    </div>
-                    
-                    <div class="col-sm-12">
-                      <ul class="list-interest" v-if="customer.interest && customer.interest.length > 0">
-                        <li v-for="(type, index) in customer.interest" :key="index"><button type="button" @click="removeInterest(index)" class="close">&times;</button>{{type.type_of_product.type}}</li>
-                      </ul>
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
             </div>
@@ -145,7 +100,7 @@
                 <div class="card-title">
                   <h4 class="title">Thông tin liên hệ</h4>
                 </div>
-                <div class="card-body" v-if="customer">
+                <div class="card-body" v-if="staff">
                   <div class="form-group row">
                     <label for="email" class="col-sm-3 col-form-label"
                       >Email:</label
@@ -155,7 +110,7 @@
                         type="email"
                         class="form-control"
                         id="email"
-                        v-model="customer.email"
+                        v-model="staff.email"
                         placeholder="Email"
                       />
                     </div>
@@ -169,75 +124,26 @@
                         type="text"
                         class="form-control"
                         id="phone"
-                        v-model="phone"
+                        v-model="staff.phone"
                         @keypress="isNumber($event)"
                         placeholder="Thêm số điện thoại"
                       />
                     </div>
-                    <div class="col-sm-3" style="display: flex;justify-content: space-between;align-items: center;">
-                      <button
-                        class="btn btn-sm btn-gradient-info"
-                        @click="addPhone()"
-                      >
-                        Thêm
-                      </button>
-                    </div>
-                    <div class="list-phones">
-                      <div
-                        class="phone"
-                        v-for="(phone, index) in customer.customer_phone"
-                        :key="index"
-                      >
-                        <span> {{ phone.phone }} </span>
-                        <button
-                          type="button"
-                          class="btn-close"
-                          @click="del(index)"
-                        >
-                          <i class="mdi mdi-close"></i>
-                        </button>
-                      </div>
-                    </div>
                   </div>
-                  <div class="form-group row">
-                    <label for="text" class="col-sm-3 col-form-label"
-                      >Zalo:</label
-                    >
-                    <div class="col-sm-9">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="text"
-                        v-model="customer.email"
-                        placeholder="Email"
-                      />
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="text" class="col-sm-3 col-form-label"
-                      >Facebook:</label
-                    >
-                    <div class="col-sm-9">
-                      <input
-                        type="text"
-                        class="form-control"
-                        v-model="customer.email"
-                        placeholder="Email"
-                      />
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      
     </div>
   </div>
 </template>
 <script>
 import axios from "redaxios";
-import { customer } from "../../config";
+import * as url from "../../config";
 export default {
   data() {
     return {
@@ -246,24 +152,17 @@ export default {
     };
   },
   computed: {
-    typeCustomer() {
-      return this.$store.state.baseData ? this.$store.state.baseData.type_of_customer : null;
+    departments() {
+      return this.$store.state.departments;
     },
-    typeOfProduct(){
-      return this.$store.state.baseData ? this.$store.state.baseData.type_of_product : null;
-    },
-    customer() {
-      return this.$store.state.customer;
+    staff() {
+      return this.$store.state.staff;
     },
   },
   created() {
-    this.$store.dispatch("getCustomerInfo", { id: this.$route.params.id, upload: true });
+    this.$store.dispatch("getStaffInfo", { id: this.$route.params.id, upload: true });
   },
   methods: {
-    del(index) {
-      console.log(index);
-      this.customer.customer_phone.splice(index, 1);
-    },
     isNumber: function (evt) {
       evt = evt ? evt : window.event;
       var charCode = evt.which ? evt.which : evt.keyCode;
@@ -279,57 +178,18 @@ export default {
         return true;
       }
     },
-    addPhone() {
-      if (this.phone != "") {
-        if (
-          this.customer.customer_phone.findIndex(
-            (x) => x.phone == this.phone
-          ) >= 0
-        ) {
-          cuteAlert({
-            type: "warning",
-            title: "Thêm số điện thoại",
-            message: "Số điện thoại đã tồn tại",
-            buttonText: "Xác nhận",
-          });
-        } else {
-          this.customer.customer_phone.push({
-            phone: this.phone,
-            customer_id: this.customer.id,
-          });
-          this.phone = "";
-        }
-      }
-    },
-    addInterestProduct() {
-      this.customer.interest.push({
-            customer_id: this.customer.id,
-            type_of_product_id: this.interest,
-            type_of_product:{
-              type: this.typeOfProduct.find( (x) => x.id == this.interest).type,
-            } 
-          });
-          this.interest = -1;
-          console.log(this.customer.interest);
-    },
-    removeInterest(index){
-      this.customer.interest.splice(index, 1);
-    },
     goBack() {
       this.$router.go(-1);
-    },
-    updated() {
-      console.log(this.customer);
     },
     async update() {
       await axios({
         method: "PATCH",
-        url: customer.UPDATE + this.customer.id,
+        //url: customer.UPDATE + this.customer.id,
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
           Accept: "application/json",
         },
-        data: this.customer,
+        //data: this.customer,
       })
         .then((res) => {
           console.log(res);

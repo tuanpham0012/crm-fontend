@@ -77,18 +77,25 @@
         </div>
       </template>
       <template v-slot:footer>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          @click="toggleModalLead()"
-        >
-          Close
-        </button>
-        <button type="button" class="btn btn-primary" @click="assignSale()">
+        <button type="button" class="btn btn-sm btn-info" @click="assignSale()">
           Xác nhận
         </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary"
+          @click="toggleModalLead()"
+        >
+          Hủy
+        </button>
+        
       </template>
     </base-modal>
+
+    <SendMailModal
+        v-if="modalSendMail"
+        :listCustomer="cus"
+        @update="mailUpdate"
+        @close-modal="toggleModalSendMail()"/>
 
     <div class="content-wrapper">
       <div class="page-header">
@@ -105,12 +112,12 @@
         </nav>
       </div>
       <div class="row">
-        <div class="col-md-6 stretch-card">
+        <div class="col-md-3 stretch-card">
           <div class="card">
             <div class="card-body">
-              <div class="clearfix">
+              <div>
                 <div class="card-title">
-                  <h4 class="title">Thông tin chính</h4>
+                  <p class="title">Thông tin chính</p>
                   <div class="action">
                     <button
                       class="btn btn-sm btn-outline-info dropdown-toggle"
@@ -145,7 +152,7 @@
                 </div>
                 <div class="card-body" v-if="customer">
                   <div class="row-info">
-                    <span class="row-title">Mã khách hàng :</span>
+                    <span class="row-title">Mã khách hàng:</span>
                     <span class="row-content">
                       {{
                         customer.customer_code
@@ -156,13 +163,13 @@
                   </div>
                   <div>
                     <div class="row-info">
-                      <span class="row-title">Tên khách hàng :</span>
+                      <span class="row-title">Tên khách hàng:</span>
                       <span class="row-content">{{
                         customer.name ? customer.name : "Đang cập nhật"
                       }}</span>
                     </div>
                     <div class="row-info">
-                      <span class="row-title">Địa chỉ :</span>
+                      <span class="row-title">Địa chỉ:</span>
                       <span class="row-content">
                         {{
                           customer.address ? customer.address : "Đang cập nhật"
@@ -170,7 +177,7 @@
                       </span>
                     </div>
                     <div class="row-info">
-                      <span class="row-title">Giới tính :</span>
+                      <span class="row-title">Giới tính:</span>
                       <span class="row-content">
                         {{
                           customer.gender ? customer.gender : "Đang cập nhật"
@@ -178,7 +185,7 @@
                       </span>
                     </div>
                     <div class="row-info">
-                      <span class="row-title">Sinh nhật :</span>
+                      <span class="row-title">Sinh nhật:</span>
                       <span class="row-content">
                         {{
                           customer.date_of_birth
@@ -188,7 +195,7 @@
                       </span>
                     </div>
                     <div class="row-info">
-                      <span class="row-title">Mối quan hệ :</span>
+                      <span class="row-title">Mối quan hệ:</span>
                       <span class="row-content">
                         {{
                           customer.type_customer && customer.type_customer.type
@@ -198,25 +205,22 @@
                       </span>
                     </div>
                     <div class="row-info">
-                      <span class="row-title">Sản phẩm quan tâm :</span>
+                      <span class="row-title">Sản phẩm quan tâm:</span>
                       <div class="col-sm-7">
-                        <ul style="margin-top:1rem;" v-if="typeOfProduct">
-                            <li v-for="(type, index) in typeOfProduct" :key="index">
-                                {{ type.type}}
-                            </li>
-                          </ul>
-                          <span class="updating" v-else>Đang cập nhật</span>
+                        <ul style="margin-top: 1rem" v-if="typeOfProduct">
+                          <li
+                            v-for="(type, index) in typeOfProduct"
+                            :key="index"
+                          >
+                            {{ type.type }}
+                          </li>
+                        </ul>
+                        <span class="updating" v-else>Đang cập nhật</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 stretch-card">
-          <div class="card">
-            <div class="card-body">
               <div class="clearfix">
                 <div class="card-title">
                   <h4 class="title">Thông tin liên hệ</h4>
@@ -231,7 +235,7 @@
                       Tương tác
                     </button>
                     <div class="dropdown-menu">
-                      <a class="dropdown-item" href="#">Gửi Mail</a>
+                      <a class="dropdown-item" @click="toggleModalSendMail()" href="#">Gửi Mail</a>
                       <a class="dropdown-item" href="#">Gọi điện</a>
                       <a
                         class="dropdown-item"
@@ -239,20 +243,18 @@
                         @click="toggleModalLead()"
                         >Gán người phụ trách</a
                       >
-                      <a class="dropdown-item" href="#">Trao đổi zalo</a>
-                      <a class="dropdown-item" href="#">Báo giá sản phẩm</a>
                     </div>
                   </div>
                 </div>
                 <div class="card-body" v-if="customer">
                   <div class="row-info">
-                    <span class="row-title">Email :</span>
+                    <span class="row-title">Email:</span>
                     <span class="row-content">{{
                       customer.email ? customer.email : "Đang cập nhật"
                     }}</span>
                   </div>
                   <div class="row-info" style="align-items: baseline">
-                    <span class="row-title">Điện thoại :</span>
+                    <span class="row-title">Điện thoại:</span>
                     <ol
                       class="row-content"
                       v-if="customer.customer_phone.length > 0"
@@ -269,70 +271,38 @@
                   <div class="row-info">
                     <span class="row-title">Zalo :</span>
                     <span class="row-content">
-                      {{
-                        customer.address ? customer.address : "Đang cập nhật"
-                      }}
+                      Đang cập nhật
                     </span>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix">
+                <div class="card-title">
+                  <h4 class="title">Thông tin khác</h4>
+                </div>
+                <div v-if="customer">
+                  <div class="row-info">
+                    <span class="row-title">Người phụ trách:</span>
+                    <span class="row-content">{{
+                      customer.contacts
+                        ? customer.contacts.user.name
+                        : "Đang cập nhật"
+                    }}</span>
                   </div>
                   <div class="row-info">
-                    <span class="row-title">Facebook :</span>
-                    <span class="row-content">
-                      {{
-                        customer.address ? customer.address : "Đang cập nhật"
-                      }}
-                    </span>
+                    <span class="row-title">Số lần liên hệ:</span>
+                    <span class="row-content">{{
+                      customer.call_histories ? customer.call_histories.length : "Đang cập nhật"
+                    }}</span>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-3 stretch-card">
-          <div class="card">
-            <div class="card-body">
-              <div class="card-title">
-                <h4 class="title">Thông tin khác</h4>
-                <div class="action">
-                  <button
-                    type="button"
-                    class="btn btn-gradient-light btn-sm btn-icon-text"
-                  >
-                    <i class="mdi mdi-settings"></i> Sửa
-                  </button>
-                </div>
-              </div>
-              <div v-if="customer">
-                <div class="row-info">
-                  <span class="row-title">Người phụ trách :</span>
-                  <span class="row-content">{{
-                    customer.contacts
-                      ? customer.contacts.user.name
-                      : "Đang cập nhật"
-                  }}</span>
-                </div>
-                <div class="row-info">
-                  <span class="row-title">Số lần liên hệ :</span>
-                  <span class="row-content">{{
-                    customer.address ? customer.address : "Đang cập nhật"
-                  }}</span>
-                </div>
-                <div class="row-info">
-                  <span class="row-title">Liên hệ cuối :</span>
-                  <span class="row-content">{{
-                    customer.gender ? customer.gender : "Đang cập nhật"
-                  }}</span>
-                </div>
-                <div class="row-info">
-                  <span class="row-title">Giá trị đơn hàng :</span>
-                  <span class="row-content">
-                    {{
-                      customer.date_of_birth
-                        ? customer.date_of_birth
-                        : "Đang cập nhật"
-                    }}
-                  </span>
+                  <div class="row-info">
+                    <span class="row-title">Liên hệ cuối:</span>
+                    <span class="row-content">{{
+                      customer.call_histories ? dateTime(customer.call_histories[1].created_at) : "Đang cập nhật"
+                    }}</span>
+                  </div>
+                  
+                  
                 </div>
               </div>
             </div>
@@ -341,17 +311,7 @@
         <div class="col-md-9 stretch-card">
           <div class="card">
             <div class="card-body">
-              <div class="card-title">
-                <h4 class="title">Ghi chú chăn sóc</h4>
-                <div class="action">
-                  <button
-                    type="button"
-                    class="btn btn-gradient-light btn-sm btn-icon-text"
-                  >
-                    <i class="mdi mdi-settings"></i> Sửa
-                  </button>
-                </div>
-              </div>
+             
               <div class="card-content">
                 <div>
                   <div class="tab-content">
@@ -373,11 +333,17 @@ import * as url from "../../config";
 import BaseModal from "../../components/Modal.vue";
 import Loading from "../../components/Loading.vue";
 import CustomerTabVue from "../../components/CustomerTab.vue";
+import SendMailModal from "../../components/SendMailModal.vue";
+
+import moment from "moment/min/moment-with-locales";
+moment.locale("vi");
+
 export default {
   components: {
     BaseModal,
     Loading,
     CustomerTabVue,
+    SendMailModal,
   },
   data() {
     return {
@@ -386,20 +352,26 @@ export default {
       department_id: -1,
       staff_id: -1,
       staffs: [],
+      modalSendMail: false,
+      cus: []
     };
   },
   computed: {
     typeCustomer() {
-      return this.$store.state.baseData ? this.$store.state.baseData.type_of_customer : null;
+      return this.$store.state.baseData
+        ? this.$store.state.baseData.type_of_customer
+        : null;
     },
-    typeOfProduct(){
-      return this.$store.state.baseData ? this.$store.state.baseData.type_of_product : null;
+    typeOfProduct() {
+      return this.$store.state.baseData
+        ? this.$store.state.baseData.type_of_product
+        : null;
     },
     customer() {
       return this.$store.state.customer;
     },
     departments() {
-      return this.$store.state.departments;
+      return this.$store.state.baseData ? this.$store.state.baseData.staff : null;
     },
   },
   watch: {
@@ -410,13 +382,29 @@ export default {
       this.staffs = department[0].staff_of_department;
       this.staff_id = -1;
     },
+    customer(){
+      if(this.customer){
+        this.cus.push(this.customer.id);
+      }
+    }
   },
   created() {
-    this.$store.dispatch("getCustomerInfo", { id: this.$route.params.id });
+    this.$store.dispatch("getCustomerInfo", { id: this.$route.params.id , upload: true});
   },
   methods: {
     toggleModalLead() {
       this.modalLead = !this.modalLead;
+    },
+    toggleModalSendMail(){
+      this.modalSendMail = !this.modalSendMail;
+      console.log(this.modalSendMail);
+    },
+    dateTime(value) {
+      return moment(value).utc().format("HH:mm:ss DD-MM-YYYY");
+    },
+    mailUpdate(){
+      this.$store.dispatch("getCustomerInfo", { id: this.$route.params.id , upload: false})
+      this.modalSendMail = false;
     },
     async assignSale() {
       await axios({
@@ -469,10 +457,16 @@ i {
 .stretch-card {
   padding: 0.5rem;
 }
+.clearfix{
+  border-top: 1px solid rgb(192, 201, 243);
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
 .title {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 1.15rem;
+  font-size: 1rem;
+  font-weight: 550;
 }
 .card .card-body {
   padding: 0.4rem;
@@ -482,22 +476,22 @@ i {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px gainsboro solid;
   padding: 0 0.3rem 0.5rem 0.3rem;
 }
 .row-info {
   display: flex;
   align-items: center;
   align-content: center;
+  justify-content: space-between;
   padding: 0.3rem 0.5rem;
-  margin: 0.5rem 0;
-  font-size: 1rem;
+  font-size: 0.875rem;
   min-height: 2.5rem;
 }
 .row-title {
   padding-bottom: 0.1rem;
   font-weight: 600;
   margin-right: 0.4rem;
+  font-size: 0.9rem;
 }
 .form-group {
   margin-bottom: 0.5rem;

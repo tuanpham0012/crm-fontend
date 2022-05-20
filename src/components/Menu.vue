@@ -31,7 +31,7 @@
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <router-link class="nav-link" :to="{ name : 'my-customer'}" >Khách hàng phụ trách</router-link></li>
                   <li class="nav-item"> <router-link class="nav-link" :to="{ name : 'tasks'}">Công việc của tôi</router-link></li>
-                  <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Nhóm</a></li>
+                  <!-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Nhóm</a></li> -->
                 </ul>
               </div>
             </li>
@@ -41,7 +41,7 @@
                 <i class="mdi mdi mdi-human-male-female menu-icon"></i>
               </router-link>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="pages/forms/basic_elements.html">
                 <span class="menu-title">Bán hàng</span>
                 <i class="mdi mdi mdi-sale menu-icon"></i>
@@ -52,14 +52,14 @@
                 <span class="menu-title">Tiếp thị</span>
                 <i class="mdi mdi mdi-reproduction menu-icon"></i>
               </a>
-            </li>
-            <li class="nav-item">
+            </li> -->
+            <!-- <li class="nav-item">
               <a class="nav-link" href="pages/tables/basic-table.html">
                 <span class="menu-title">Chăm sóc khách hàng</span>
                 <i class="mdi mdi mdi-emoticon-happy menu-icon"></i>
               </a>
-            </li>
-            <li class="nav-item">
+            </li> -->
+            <li class="nav-item" v-if="user && user.role_id == 1">
               <a class="nav-link" data-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
                 <span class="menu-title">Quản lý</span>
                 <i class="menu-arrow"></i>
@@ -69,28 +69,12 @@
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item"> <router-link class="nav-link" :class="{ 'active' : $route.name == 'staffs'}" :to="{name: 'staffs'}"> Nhân viên </router-link></li>
                   <li class="nav-item"> <router-link class="nav-link" :class="{ 'active' : $route.name == 'departments'}" :to="{name: 'departments'}"> Phòng ban </router-link></li>
-                  <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> {{ $route.name }} </a></li>
+                  <li class="nav-item"> <router-link class="nav-link" :class="{ 'active' : $route.name == 'projects'}" :to="{name: 'projects'}"> Dự án </router-link></li>
+                  <!-- <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> {{ $route.name }} </a></li>
                   <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
-                  <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
+                  <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li> -->
                 </ul>
               </div>
-            </li>
-            <li class="nav-item sidebar-actions">
-              <span class="nav-link">
-                <div class="border-bottom">
-                  <h6 class="font-weight-normal mb-3">Projects</h6>
-                </div>
-                <button class="btn btn-block btn-lg btn-gradient-primary mt-4">+ Add a project</button>
-                <div class="mt-4">
-                  <div class="border-bottom">
-                    <p class="text-secondary">Categories</p>
-                  </div>
-                  <ul class="gradient-bullet-list mt-4">
-                    <li>Free</li>
-                    <li>Pro</li>
-                  </ul>
-                </div>
-              </span>
             </li>
           </ul>
         </nav>
@@ -113,7 +97,7 @@ export default {
 </script>
 <style scoped>
 .sidebar{
-  height: 150vh;
+  height: 101vh;
   overflow: auto; 
 }
 

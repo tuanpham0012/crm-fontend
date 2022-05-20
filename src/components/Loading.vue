@@ -37,9 +37,17 @@
 export default {
   computed: {
     loading() {
-      return this.$store.state.loading;
+      return this.$store.state.loading ? this.$store.state.loading : false;
     },
   },
+  watch:{
+    loading(){
+      console.log(this.loading);
+    }
+  },
+  created(){
+    
+  }
 };
 </script>
 <style scoped>
@@ -51,10 +59,10 @@ export default {
   justify-items: center;
 }
 .loader {
-  background: rgba(230, 230, 230, 0.76);
+  background: rgb(230, 230, 230);
   background: radial-gradient(
-    rgba(218, 218, 218, 0.938),
-    rgba(138, 137, 137, 0.637)
+    rgb(218, 218, 218),
+    rgb(138, 137, 137)
   );
   bottom: 0;
   left: 0;

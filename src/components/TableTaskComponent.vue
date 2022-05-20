@@ -19,6 +19,7 @@
             v-for="(task, index) in tasks"
             :key="index"
             @click="emitModalTaskInfo(task.id)"
+            :class="{ 'accept' : task.task_user && task.task_user.find((x) => x.user_id === id) && task.task_user.find((x) => x.user_id === id).accept == 0}"
           >
             <td>
               {{ index + 1 }}
@@ -33,9 +34,10 @@
               {{ dateTime(task.end) }}
             </td>
             <td>
-              {{ task.task_status.status }}
+              {{ task.task_status ? task.task_status.status : 'Đang cập nhật' }}
             </td>
-            <td>
+            <td class="td-user">
+              <img :src="task.user.avatar ?? 'https://cms.vietnamreport.net//source/CEO/512.png'" alt="" />
               {{ task.user.name }}
             </td>
             <td>
@@ -109,6 +111,9 @@ export default {
     tasks() {
       return this.tasksProps ? this.tasksProps.slice(0, this.total) : null;
     },
+    id() {
+      return this.$store.state.userInfo.id;
+    },
   },
   watch: {
   },
@@ -122,7 +127,7 @@ export default {
       console.log(this.total);
     },
     dateTime(value) {
-      return moment(value).utc().format("HH:mm:ss DD-MM-YYYY");
+      return moment(value).utc().format("HH:mm:ss DD/MM/YYYY");
     },
     emitModalTaskInfo(id) {
       this.$emit("toggleTask", id);
@@ -138,17 +143,18 @@ export default {
 .table tr {
   cursor: pointer;
 }
-.view-more {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
 .blank-task {
   text-align: center;
 }
 .blank-task img {
   width: 20rem;
   height: 20rem;
+}
+.accept{
+  background-color: rgb(241, 244, 247);
+  color: rgb(19, 19, 241);
+}
+.accept td{
+  font-weight: 500;
 }
 </style>

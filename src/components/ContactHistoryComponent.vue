@@ -1,7 +1,15 @@
 <template>
   <div class="card-content">
+
+    <CreateContactModal
+      v-if="modalContact"
+      @close-modal="toggleModal()"/>
+
     <div class="contact-container">
-      <p class="title">Danh sách cuộc gọi</p>
+      <div class="title">
+        <p>Danh sách cuộc gọi</p>
+        <button class="btn btn-sm btn-gradient-info " @click="toggleModal()">Tạo liên hệ</button>
+      </div>
       <div class="table-responsive">
         <table class="table table-hover table-bordered">
           <thead>
@@ -17,18 +25,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td scope="row">Jacob</td>
-              <td>53275531</td>
-              <td>12 May 2017</td>
+            <tr v-if="callHistory" v-for="(item, index) in callHistory" :key="index">
+              <td scope="row">{{ index + 1}}</td>
+              <td>{{ item.user.name}}</td>
+              <td>{{ item.phone_contacts }}</td>
               <td>
-                <label class="badge badge-danger">Pendingwdwdwdwdwdwd</label>
+                <label class="badge badge-info">{{ item.call_status_id }}</label>
               </td>
-              <td>Jacob</td>
-              <td>53275531</td>
-              <td>12 May 2017</td>
+              <td>{{ item.time }}</td>
+              <td>{{ item.content}}</td>
+              <td>{{ item.link_record ?? 'Không có file'}}</td>
               <td>
-                <label class="badge badge-danger">Pendingwdwddwdwdwdwdwd</label>
+                {{ item.note}}
               </td>
             </tr>
           </tbody>
@@ -38,7 +46,30 @@
   </div>
 </template>
 <script>
-export default {};
+import CreateContactModal from "./CreateContactModal.vue";
+export default {
+  components:{
+    CreateContactModal,
+  },
+  props:{
+    callHistory:{
+      type: Array,
+      default: function(){
+        return null;
+      }
+    }
+  },
+  data() {
+    return {
+      modalContact: false,
+    }
+  },
+  methods:{
+    toggleModal(){
+      this.modalContact = !this.modalContact;
+    }
+  }
+};
 </script>
 <style scoped>
 td {
@@ -51,7 +82,13 @@ td {
   border-radius: 5px;
 }
 .title {
+  display: flex;
+  justify-content: space-between;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem 1rem 1.5rem 1rem;
+}
+.title p{
+  font-weight: 500;
+  font-size: 1.1rem;
 }
 </style>

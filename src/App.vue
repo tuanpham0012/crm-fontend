@@ -8,22 +8,24 @@
         </div>
   </div>
   <to-do></to-do>
+  <Footer />
 </template>
 
 <script>
 	import TopNav from "./components/Top.vue";
 	import Menu from "./components/Menu.vue";
-import ToDo from "./components/ToDoList.vue";
+  import ToDo from "./components/ToDoList.vue";
+  import Footer from "./components/Footer.vue";
 export default{
     components:{
       TopNav,
       Menu,
       ToDo,
+      Footer
     },
     data() {
       return {
         componentName: '',
-        showModal:false,
       }
     },
     computed:{
@@ -34,12 +36,21 @@ export default{
     created(){
       if(localStorage.getItem('token')) this.$store.dispatch('getInfo', { token: localStorage.getItem('token') });
       this.$store.dispatch('getBaseData');
+      this.$store.dispatch('getListNotification')
+      this.getNotifications();
     },
   	watch:{
         $route (to){
           this.componentName = to.name;
-          console.log(this.$store.state.loading);
         },
+    },
+    methods: {
+      getNotifications(){
+        setInterval( () => {
+          if(this.$store.getters.getInfo)
+            this.$store.dispatch('getListNotification')
+        }, 30000);
+      },
     },
   
 }

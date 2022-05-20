@@ -1,31 +1,6 @@
 <template lang="">
+  <Loading />
   <div class="main-panel">
-    <base-modal v-if="showModal" title="Thêm mới khách hàng" @closeModal="toggleModal()">
-            <template v-slot:body>
-              <div class="col-12">
-                <div class="card">
-                  <div class="card-body">
-                    <form class="form-sample">
-                      <div class="row bd">
-                        <div class="col-md-6">
-                          <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Tên khách hàng</label>
-                            <div class="col-sm-9">
-                              <input type="text" class="form-control" v-model="info.name" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </template>
-            <template v-slot:footer>
-              <button type="button" class="btn btn-secondary" @click="toggleModal()">Close</button>
-              <button type="button" class="btn btn-primary" @click="create()">Xác nhận</button>
-            </template>
-    </base-modal>
     <div class="content-wrapper">
       <div class="page-header">
         <h3 class="page-title">Quản lý thông tin cá nhân</h3>
@@ -35,13 +10,13 @@
       </div>
       <div class="row">
         <div class="col-lg-12 grid-margin stretch-card">
-          <div class="card">
+          <div class="card" v-if="info">
             <div class="card-body">
               <div class="avatar-header">
                 <div class="avatar">
                   <div class="avatar-img">
                     <img
-                      src="https://bloganh.net/wp-content/uploads/2021/03/chup-anh-dep-anh-sang-min.jpg"
+                      :src="info.avatar ? info.avatar : 'https://bloganh.net/wp-content/uploads/2021/03/chup-anh-dep-anh-sang-min.jpg'"
                       alt=""
                     />
                     <i class="mdi mdi-grease-pencil ic-avatar"></i>
@@ -80,7 +55,7 @@
                           >Nơi sinh</label
                         >
                         <div class="col-sm-9">
-                          <p class="">{{ info.date_of_birth}}</p>
+                          <p class="">{{ info.home_town ? info.home_town : 'Đang cập nhật'}}</p>
                         </div>
                       </div>
                     </div>
@@ -94,16 +69,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-6">
-                      <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >Ngày sinh</label
-                        >
-                        <div class="col-sm-9">
-                          <p class="">{{ info.date_of_birth}}</p>
-                        </div>
-                      </div>
-                    </div>
+                    
                     <div class="col-md-6">
                       <div class="info-row">
                         <label class="col-sm-3 col-form-label"
@@ -120,7 +86,7 @@
                           >Địa chỉ</label
                         >
                         <div class="col-sm-9">
-                          <p class="">{{ info.date_of_birth}}</p>
+                          <p class="">{{ info.address ? info.address : 'Đang cập nhật' }}</p>
                         </div>
                       </div>
                     </div>
@@ -150,7 +116,7 @@
                           >Ngày sinh</label
                         >
                         <div class="col-sm-9">
-                          <p class="">{{ info.date_of_birth ? info.date_of_birth : '(Đang cập nhật)'}}</p>
+                          <p class="">{{ dateTime(info.date_of_birth) }}</p>
                         </div>
                       </div>
                     </div>
@@ -177,6 +143,63 @@
                   </div>
                 </div>
               </div>
+              <div class="general-information">
+                <p class="title">Học vấn</p>
+                <div class="info">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="info-row">
+                        <label class="col-sm-3 col-form-label"
+                          >Trường: </label
+                        >
+                        <div class="col-sm-9">
+                          <p class="">Trường đại học Thủ đô Hà Nội</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="info-row">
+                        <label class="col-sm-3 col-form-label"
+                          >Trình độ: </label
+                        >
+                        <div class="col-sm-9">
+                          <p class="">Đại học</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="info-row">
+                        <label class="col-sm-3 col-form-label"
+                          >Khoa:</label
+                        >
+                        <div class="col-sm-9">
+                          <p class="">Tự nhiên và công nghệ</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="info-row">
+                        <label class="col-sm-3 col-form-label"
+                          >Chuyên ngành:</label
+                        >
+                        <div class="col-sm-9">
+                          <p class="">Công nghệ thông tin</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="info-row">
+                        <label class="col-sm-3 col-form-label"
+                          >Năm tốt nghiệp</label
+                        >
+                        <div class="col-sm-9">
+                          <p class="">2022</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -185,10 +208,12 @@
   </div>
 </template>
 <script>
-import BaseModal from '../../components/Modal.vue';
+import Loading from '../../components/Loading.vue';
+import moment from "moment/min/moment-with-locales";
+moment.locale("vi");
 export default {
   components:{
-    BaseModal,
+    Loading,
   },
   data() {
     return {
@@ -203,11 +228,14 @@ export default {
   methods: {
     toggleModal(){
       this.showModal = !this.showModal;
-    }
+    },
+    dateTime(value) {
+      return value ? moment(value).utc().format("DD/MM/YYYY") : 'Đang cập nhật!';
+    },
   },
 };
 </script>
-<style>
+<style scoped>
 .avatar-header {
   display: flex;
   width: 80%;
@@ -231,6 +259,7 @@ export default {
 .avatar img:hover{
   opacity: 0.99;
   cursor: pointer;
+  border: 1px rgb(214, 215, 218) solid;
 }
 .avatar img:hover + .mdi-grease-pencil{
   display: block;

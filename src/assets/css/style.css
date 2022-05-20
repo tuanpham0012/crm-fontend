@@ -13028,7 +13028,11 @@ dl {
             .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-menu.navbar-dropdown .dropdown-item i {
               font-size: 17px; }
             .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-menu.navbar-dropdown .dropdown-item .ellipsis {
-              max-width: 200px;
+              max-width: 20rem;
+              font-size: 0.875rem;
+              font-weight: 400;
+              word-wrap: break-word;
+              white-space:pre-wrap;
               overflow: hidden;
               text-overflow: ellipsis; }
             .rtl .navbar .navbar-menu-wrapper .navbar-nav .nav-item.dropdown .dropdown-menu.navbar-dropdown .dropdown-item i {

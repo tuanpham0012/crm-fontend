@@ -8,7 +8,7 @@
           <span class="c-uuid">{{ customer.customer_code }}</span>
         </p>
         <p class="c-lead">
-          {{
+          @ {{
             customer.contacts ? customer.contacts.user.name : "Đang cập nhật"
           }}
         </p>
@@ -21,7 +21,7 @@
           params: { id: customer.id },
         }"
       >
-        <button type="button" class="btn btn-sm btn-info">Xem chi tiết</button>
+        <button type="button" class="btn btn-sm btn-mg btn-info">Xem chi tiết</button>
       </router-link>
       <router-link
         :to="{
@@ -29,7 +29,7 @@
           params: { id: customer.id },
         }"
       >
-        <button type="button" class="btn btn-sm btn-info">Chỉnh sửa</button>
+        <button type="button" class="btn btn-sm btn-mg btn-info">Chỉnh sửa</button>
       </router-link>
     </div>
   </div>
@@ -149,7 +149,7 @@
               <div>
                 <div class="tab-content">
                   <note-component
-                    :notes="customer.customer_notes"
+                    :notesProps="customer.customer_notes"
                     :customer_id="customer.id"
                   ></note-component>
                 </div>

@@ -4,7 +4,8 @@
     v-if="note"
   >
     <img
-      src="https://static2.yan.vn/YanNews/202005/202005220338210409-bee6f138-0608-4d56-bce3-27148a855654.png"
+      :src ="note.user.avatar ?? 'https://static2.yan.vn/YanNews/202005/202005220338210409-bee6f138-0608-4d56-bce3-27148a855654.png'"
+      alt=""
     />
     <div class="note-card">
       <div class="note-title">
@@ -22,20 +23,22 @@
                   />
       </div>
     </div>
-    <div class="action" v-if="id == note.id">
-      <div class="note-action" v-if="!edit">
-        <button type="button" class="btn btn-icon btn-react" @click="toggleEdit()"><i class="mdi mdi-heart"></i></button>
-        <div class="btn-edit" v-if="note.user_id == user_id">
-          <button type="button" class="btn btn-icon btn-action" @click="toggleEdit()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-          <button type="button" class="btn btn-icon btn-action" @click="toggleDelete(note.id)"><i class="mdi mdi-delete-forever"></i></button>
+    <!-- v-if="id == note.id" -->
+      <div class="action" v-if="id == note.id">
+        <div class="note-action" v-if="!edit">
+          <button type="button" class="btn btn-icon btn-react" @click="toggleEdit()"><i class="mdi mdi-heart"></i></button>
+          <div class="btn-edit" v-if="note.user_id == user_id">
+            <button type="button" class="btn btn-icon btn-action" @click="toggleEdit()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+            <button type="button" class="btn btn-icon btn-action" @click="toggleDelete(note.id)"><i class="mdi mdi-delete-forever"></i></button>
+          </div>
+          
         </div>
-        
+        <div v-else>
+          <button type="button" class="btn btn-sm btn-outline-info" @click="updateNote(note.id)">Cập nhật</button>
+          <button type="button" class="btn btn-sm btn-outline-link" @click="toggleEdit()">Hủy</button>
+        </div>
       </div>
-      <div v-else>
-        <button type="button" class="btn btn-sm btn-outline-info" @click="updateNote(note.id)">Cập nhật</button>
-        <button type="button" class="btn btn-sm btn-outline-link" @click="toggleEdit()">Hủy</button>
-      </div>
-    </div>
+    
   </div>
 </template>
 <script>
@@ -87,7 +90,7 @@ export default {
     toggleDelete(id){
       cuteAlert({
         type: "question",
-        title: "Xóa ghi chứ",
+        title: "Xóa ghi chú",
         message: "Bạn có chắc chắn muốn xóa?",
         confirmText: "Xác nhận",
         cancelText: "Hủy",
@@ -123,7 +126,7 @@ export default {
   background-color: rgb(242, 245, 248);
   padding: 0 0.5rem 0.8rem 0.8rem;
   border-radius: 12px;
-  max-width: 55%;
+  max-width: 65%;
 }
 .note-title {
   display: flex;
@@ -144,6 +147,7 @@ export default {
 .action{
   display: flex;
   align-items: flex-end;
+  
 }
 .note-action {
   display: flex;
@@ -151,6 +155,7 @@ export default {
   right: 1em;
   align-items: flex-end;
   margin: 0rem 1rem;
+  flex-wrap: wrap;
 }
 .note-action button {
   background-color: #ffffff;
@@ -176,4 +181,5 @@ export default {
 .btn{
   margin: 0 0.5rem;
 }
+
 </style>

@@ -45,6 +45,29 @@
         @updateNote="updateNote"
         @deleteNote="deleteNote"
       />
+      <div class="view-more" v-if="notes && notes.length >= total">
+        <button
+          type="button"
+          v-if="!loadMore"
+          class="btn btn-sm btn-gradient-info"
+          @click="toggleLoadMore(moreSize)"
+        >
+          xem thêm
+        </button>
+        <button
+          class="btn btn-sm btn-gradient-info"
+          type="button"
+          disabled
+          v-else
+        >
+          <span
+            class="spinner-grow spinner-grow-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Loading...
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -56,7 +79,7 @@ import Note from "./NoteComponent.vue";
 
 export default {
   props:{
-    notes:{
+    notesProps:{
       type: Array,
       default: function(){
         return null;
@@ -74,9 +97,29 @@ export default {
       note: "",
       id_note: -1,
       loading: false,
+      total: 15,
+      loadMore: false,
+      moreSize: 10,
     };
   },
+  computed:{
+    notes(){
+      return this.notesProps ? this.notesProps.slice(0, this.total) : null;
+    }
+  },
+  watch:{
+  },
+  created() {
+  },
   methods: {
+    toggleLoadMore(value) {
+      this.loadMore = true;
+      setTimeout(() => {
+        this.total = this.total + value;
+        this.loadMore = false;
+      }, 500);
+      console.log(this.total);
+    },
     async create_note() {
       this.loading = true;
       if (this.note.length == 0) {

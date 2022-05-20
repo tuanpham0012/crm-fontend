@@ -9,7 +9,6 @@ import router from './router/index';
 
 import store from './stores/store';
 
-
 const app = createApp(App)
 app.component('QuillEditor', QuillEditor)
 app.use(router)

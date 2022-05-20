@@ -182,7 +182,8 @@
                           <ul
                             class="list-interest"
                             v-if="
-                              customer_create.interest && customer_create.interest.length > 0
+                              customer_create.interest &&
+                              customer_create.interest.length > 0
                             "
                           >
                             <li
@@ -208,12 +209,12 @@
           </div>
         </template>
         <template v-slot:footer>
-          <button type="button" class="btn btn-info" @click="create()">
+          <button type="button" class="btn btn-sm btn-info" @click="create()">
             Xác nhận
           </button>
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-sm btn-secondary"
             @click="toggleModalCreate()"
           >
             Đóng
@@ -221,8 +222,56 @@
         </template>
       </base-modal>
 
-      <!-- Gán người phụ trách -->
+      <!-- tải file khách hàng -->
+      <base-modal
+        v-if="modalCustomerList"
+        title="Thêm khách hàng"
+        :size="false"
+        @closeModal="toggleCreateCustomerList()"
+      >
+        <template v-slot:body>
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <form class="form-sample" id="formSendFile">
+                  <div class="row bd">
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label"
+                          >Danh sách khách hàng</label
+                        >
+                        <div class="input-group mb-3">
+                          <input type="file" class="form-control" name="list-customer" id="inputGroupFile" @change="uploadFile" ref="file">
+                          <label class="input-group-text" for="inputGroupFile">Upload</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </template>
+        <template v-slot:footer>
+          <a href="http://127.0.0.1:8000/download" arget="_blank" rel="noopener noreferrer">
+            <button type="button" class="btn btn-sm btn-info">
+              Tải file mẫu
+            </button>
+          </a>
+          <button type="button" class="btn btn-sm btn-info" @click="sendFile()">
+            Xác nhận
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            @click="toggleCreateCustomerList()"
+          >
+            Close
+          </button>
+        </template>
+      </base-modal>
 
+      <!-- Gán người phụ trách -->
 
       <base-modal
         v-if="modalLead"
@@ -303,22 +352,20 @@
           </div>
         </template>
         <template v-slot:footer>
+          <button type="button" class="btn btn-sm btn-info" @click="assignSale()">
+            Xác nhận
+          </button>
           <button
             type="button"
-            class="btn btn-secondary"
+            class="btn btn-sm btn-secondary"
             @click="toggleModalLead()"
           >
-            Close
-          </button>
-          <button type="button" class="btn btn-primary" @click="assignSale()">
-            Xác nhận
+            Hủy
           </button>
         </template>
       </base-modal>
 
-
-
-<!-- Thông tin khách hàng -->
+      <!-- Thông tin khách hàng -->
 
       <base-modal
         v-if="modalCustomerInfo"
@@ -332,13 +379,42 @@
         <template v-slot:footer> </template>
       </base-modal>
 
+      <!-- Hết Thông tin khách hàng -->
 
-<!-- Hết Thông tin khách hàng -->
+      <!-- Gửi email khách hàng -->
+
+      <SendMailModal
+        v-if="modalSendMail"
+        :listCustomer="selectCustomer"
+        @close-modal="toggleModalSendMail()"/>
+         
+
+      <!-- Gửi email khách hàng -->
+
+      <!--Cập nhật quan hệ khách hàng -->
+
+      <UpdateTypeCustomerModal
+        v-if="modalUpdateTypeCustomer"
+        :listCustomer="selectCustomer"
+        @close-modal="toggleModalUpdateTypeCustomer()"
+        @update="getList(currentPage, search, type_of_customer, isDeleted)" />
+         
+
+      <!--Cập nhật quan hệ khách hàng -->
+
+
 
       <div class="page-header">
         <h3 class="page-title">Danh sách khách hàng</h3>
         <nav aria-label="breadcrumb">
           <div class="btn-action">
+            <button
+              type="button"
+              @click="toggleCreateCustomerList()"
+              class="btn btn-sm btn-gradient-info btn-icon-text"
+            >
+              <i class="mdi mdi-cloud-upload"></i> Tải lên khách hàng
+            </button>
             <button
               type="button"
               @click="toggleModalCreate()"
@@ -352,18 +428,22 @@
               class="btn btn-sm btn-outline-info dropdown-toggle"
               data-toggle="dropdown"
               aria-expanded="false"
+              :class="{ disabled: selectCustomer.length == 0 }"
             >
               Hành động
             </button>
             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
               <a
                 class="dropdown-item"
-                :class="{ disabled: selected.length == 0 }"
+                
                 href="#"
                 @click="toggleModalLead()"
-                >Gán sale</a
+                >Cập nhật người phụ trách</a
               >
-              <a class="dropdown-item" href="#">Dropdown link</a>
+              <a class="dropdown-item" @click="toggleModalSendMail()" href="#">Gửi Mail</a>
+              <a class="dropdown-item" href="#">Gửi SMS</a>
+              <a class="dropdown-item" href="#" @click="toggleModalUpdateTypeCustomer()">Cập nhật quan hệ</a>
+              <a class="dropdown-item" href="#" @click="toggleDeleteCustomer()">Xóa khách hàng</a>
             </div>
           </div>
         </nav>
@@ -415,10 +495,10 @@
                 <div class="form-group-fill">
                   <label class="fill-lable">Trạng thái</label>
                   <div class="fill-select">
-                    <select class="form-control form-control-sm">
-                      <option>-- Tất cả --</option>
-                      <option>Đang sử dụng</option>
-                      <option>Đã xóa</option>
+                    <select class="form-control form-control-sm" v-model="isDeleted">
+                      <option value="-1">-- Tất cả --</option>
+                      <option value="0">Đang sử dụng</option>
+                      <option value="1">Đã xóa</option>
                     </select>
                   </div>
                 </div>
@@ -439,11 +519,10 @@
                       <th>Khách hàng</th>
                       <th>Số điện thoại</th>
                       <th>Email</th>
-                      <th>Loại khách hàng</th>
-                      <th>Trạng thái</th>
+                      <th>Sinh nhật</th>
+                      <th>Mối quan hệ</th>
                       <th>Người phụ trách</th>
-                      <th>Ngày tạo</th>
-                      <th>Ngày cập nhật</th>
+                      <th>Người tạo</th>
                     </tr>
                   </thead>
                   <tbody v-if="customers && customers.data.length > 0">
@@ -454,7 +533,7 @@
                       <td>
                         <input
                           type="checkbox"
-                          v-model="selected"
+                          v-model="selectCustomer"
                           :value="customer.id"
                           @change="updateCheckall()"
                         />
@@ -468,7 +547,13 @@
                       </td>
                       <td>
                         <div>
-                          <p class="name">{{ customer.name }}</p>
+                          <router-link
+                            :to="{
+                              name: 'customer-detail',
+                              params: { id: customer.id },
+                            }"
+                            >{{ customer.name }}</router-link
+                          >
                           <p class="address">
                             <i class="mdi mdi-map-marker"></i
                             >{{ customer.address }}
@@ -492,8 +577,8 @@
                         >
                       </td>
                       <td>{{ customer.email }}</td>
+                      <td>{{ dateTime(customer.date_of_birth) }}</td>
                       <td>{{ customer.type_customer.type }}</td>
-                      <td>{{ customer.status }}</td>
                       <td :class="{ updating: !customer.contacts }">
                         {{
                           customer.contacts
@@ -501,8 +586,13 @@
                             : "( Đang cập nhật )"
                         }}
                       </td>
-                      <td>{{ dateTime(customer.created_at) }}</td>
-                      <td>{{ dateTime(customer.updated_at) }}</td>
+                      <td :class="{ updating: !customer.user_id }">
+                        {{
+                          customer.user
+                            ? customer.user.name
+                            : "( Đang cập nhật )"
+                        }}
+                      </td>
                     </tr>
                   </tbody>
                   <tbody v-else>
@@ -563,28 +653,40 @@
 <script>
 import axios from "redaxios";
 import * as url from "../../config";
+
 import BaseModal from "../../components/Modal.vue";
 import Loading from "../../components/Loading.vue";
 import CustomerInfoModal from "../../components/CustomerInfoModal.vue";
-import moment from "moment";
+import SendMailModal from "../../components/SendMailModal.vue";
+import UpdateTypeCustomerModal from "../../components/UpdateTypeCustomerModal.vue";
+
+
+import moment from "moment/min/moment-with-locales";
+moment.locale("vi");
 
 export default {
   components: {
     BaseModal,
     Loading,
     CustomerInfoModal,
+    SendMailModal,
+    UpdateTypeCustomerModal,
   },
   data() {
     return {
       modalCreate: false,
       modalLead: false,
       modalCustomerInfo: false,
+      modalSendMail: false,
+      modalUpdateTypeCustomer: false,
+      modalCustomerList: false,
       assignNew: true,
       department_id: -1,
       staff_id: -1,
       currentPage: 1,
       search: "",
       type_of_customer: -1,
+      isDeleted: 0,
       customer_create: {
         name: "",
         email: "",
@@ -597,8 +699,9 @@ export default {
       interest: -1,
       staffs: [],
       select: false,
-      selected: [],
+      selectCustomer: [],
       isCheckAll: false,
+      customerFile: null,
     };
   },
   computed: {
@@ -621,15 +724,15 @@ export default {
       return this.$store.state.customer;
     },
     departments() {
-      return this.$store.state.departments;
+      return this.$store.state.baseData.staff ?? null;
     },
   },
   watch: {
     currentPage() {
-      this.getList(this.currentPage, this.search, this.type_of_customer);
+      this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
     },
     type_of_customer() {
-      this.getList(this.currentPage, this.search, this.type_of_customer);
+      this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
     },
     department_id() {
       var department = this.departments.filter(
@@ -641,45 +744,84 @@ export default {
     interests() {
       console.log(this.interests);
     },
+    isDeleted(){
+      this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
+    }
   },
   created() {
-    this.getList(this.currentPage, this.search, this.type_of_customer);
-    this.$store.dispatch("getListDepartment");
+    this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
+    //this.$store.dispatch("getListDepartment");
   },
   methods: {
     checkAll: function () {
       if (this.select) {
-        this.selected = [];
+        this.selectCustomer = [];
         this.select = false;
         this.isCheckAll = 0;
       } else {
         this.isCheckAll = !this.isCheckAll;
-        this.selected = [];
+        this.selectCustomer = [];
         if (this.isCheckAll) {
           // Check all
           for (var key in this.customers.data) {
-            this.selected.push(this.customers.data[key].id);
+            this.selectCustomer.push(this.customers.data[key].id);
           }
         }
       }
       console.log(this.isCheckAll);
     },
     updateCheckall: function () {
-      if (this.selected.length == this.customers.data.length) {
+      if (this.selectCustomer.length == this.customers.data.length) {
         this.isCheckAll = true;
         this.select = false;
         console.log(this.isCheckAll);
       } else {
         this.isCheckAll = false;
       }
-      if (this.selected.length > 0) this.select = true;
+      if (this.selectCustomer.length > 0) this.select = true;
       else this.select = false;
     },
+
+    uploadFile(){
+      this.customerFile = this.$refs.file.files[0];
+    },
+
+    sendFile(){
+      var $formSendFile = $('#formSendFile');
+      const formData = new FormData(formSendFile);
+      console.log(formData);
+      axios({
+        method: "POST",
+        url: url.customer.CREATE_MUTILPLE_CUSTOMER,
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+          Accept: "application/json",
+        },
+        data: formData,
+      })
+        .then((res) => {
+          console.log(res.data);
+          cuteToast({
+            type: "success",
+            message: res.data.message,
+            timer: 5000,
+          });
+          this.toggleCreateCustomerList();
+          this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     dateTime(value) {
-      return moment(value).utc().format("HH:mm:ss DD-MM-YYYY");
+      return moment(value).utc().format("DD/MM/YYYY");
     },
     toggleModalCreate() {
       this.modalCreate = !this.modalCreate;
+    },
+    toggleCreateCustomerList(){
+      this.modalCustomerList = !this.modalCustomerList;
     },
     toggleModalLead() {
       this.modalLead = !this.modalLead;
@@ -687,8 +829,14 @@ export default {
     toggleModalCustomerInfo(id) {
       this.modalCustomerInfo = !this.modalCustomerInfo;
       if (id != null) {
-        this.$store.dispatch("getCustomerInfo", { id: id , upload: true});
+        this.$store.dispatch("getCustomerInfo", { id: id, upload: true });
       }
+    },
+    toggleModalSendMail(){
+      this.modalSendMail = !this.modalSendMail;
+    },
+    toggleModalUpdateTypeCustomer(){
+      this.modalUpdateTypeCustomer = !this.modalUpdateTypeCustomer;
     },
     isNumber: function (evt) {
       evt = evt ? evt : window.event;
@@ -704,26 +852,27 @@ export default {
       }
     },
     toggleSearch() {
-      this.getList(this.currentPage, this.search, this.type_of_customer);
+      this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
     },
-    getList(page, search, type) {
+    getList(page, search, type, deleted) {
       this.$store.dispatch("getListCustomer", {
         page: page,
         search: search,
         type: type,
+        deleted: deleted,
       });
     },
     addInterestProduct() {
       this.customer_create.interest.push({
-            type_of_product_id: this.interest,
-            type_of_product:{
-              type: this.typeOfProduct.find( (x) => x.id == this.interest).type,
-            } 
-          });
-          this.interest = -1;
-          console.log(this.customer_create.interest);
+        type_of_product_id: this.interest,
+        type_of_product: {
+          type: this.typeOfProduct.find((x) => x.id == this.interest).type,
+        },
+      });
+      this.interest = -1;
+      console.log(this.customer_create.interest);
     },
-    removeInterest(index){
+    removeInterest(index) {
       this.customer.interest.splice(index, 1);
     },
     async create() {
@@ -744,14 +893,14 @@ export default {
             message: res.data.message,
             timer: 5000,
           });
-          this.getList(this.currentPage, this.search, this.type_of_customer);
+          this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
         })
         .catch((err) => {
           console.log(err);
         });
     },
     async assignSale() {
-      console.log(this.selected + " - staff: " + this.staff_id);
+      console.log(this.selectCustomer + " - staff: " + this.staff_id);
       await axios({
         method: "POST",
         url: url.customer.ASSIGN_SALE,
@@ -760,25 +909,83 @@ export default {
           Accept: "application/json",
         },
         data: {
-          selected: this.selected,
-          id: this.staff_id,
+          listCustomer: this.selectCustomer,
+          user_id: this.staff_id,
           update: this.assignNew,
         },
       })
         .then((res) => {
-          console.log(res);
-          this.getList(this.currentPage, this.search, this.type_of_customer);
+          console.log(res.data);
+          cuteToast({
+              type: "success",
+              message: res.data.message,
+              timer: 3000,
+            });
+          this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
         })
         .catch((err) => {
           console.log(err);
+          cuteToast({
+              type: "error",
+              message: err.data.message,
+              timer: 3000,
+            });
         });
     },
+    toggleDeleteCustomer(){
+      cuteAlert({
+        type: "question",
+        title: "Xoá khách hàng",
+        message: "Bạn có chắc muốn xóa các khách hàng này?",
+        confirmText: "Xác nhận",
+        cancelText: "Hủy",
+      }).then((e) => {
+        if (e) {
+          axios({
+            url: url.customer.DELETE_MULTIPLE_CUSTOMER,
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+              Accept: "application/json",
+            },
+            data: {
+              listCustomer: this.selectCustomer,
+            },
+          })
+            .then((res) => {
+              this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
+              cuteToast({
+                type: "success",
+                message: res.data.message,
+                timer: 5000,
+              });
+              this.resetValue();
+            })
+            .catch((err) => {
+              cuteToast({
+                type: "error",
+                message: err.data.msg,
+                timer: 3000,
+              });
+            });
+        }
+      });
+    }
   },
 };
 </script>
 <style scoped>
 td {
-  padding: 0.1rem 0.5rem;
+  padding: 0.25rem 0.5rem;
+}
+td a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: rgb(4, 0, 255);
+}
+td a:hover {
+  color: rgb(255, 136, 0);
 }
 .updating {
   color: rgb(252, 31, 31);
@@ -808,13 +1015,14 @@ td {
 .view:hover {
   transform: scale(1.2);
   cursor: pointer;
+  color: rgb(255, 81, 0);
 }
 .name {
   font-size: 1rem;
 }
 .address {
-  font-size: 0.7rem;
-  color: blue;
+  font-size: 0.756rem;
+  color: rgb(76, 76, 94);
 }
 .bd {
   border-bottom: 1px gainsboro solid;
@@ -835,13 +1043,13 @@ td {
 .dropdown-menu {
   margin: 0.5rem;
 }
-.list-interest{
+.list-interest {
   margin: 0.5rem 0 0 1.5rem;
   background-color: rgb(221, 221, 235);
   padding: 0.5rem 0.2rem;
   border-radius: 8px;
 }
-.list-interest li{
+.list-interest li {
   background-color: rgb(255, 255, 255);
   width: max-content;
   padding-left: 0.7rem;
@@ -849,11 +1057,11 @@ td {
   border-radius: 10px 0 10px 0;
   margin: 0.5rem 1rem;
 }
-.list-interest button{
+.list-interest button {
   font-size: 1.4rem;
   margin-left: 1rem;
 }
-.list-interest button:hover{
+.list-interest button:hover {
   transform: scale(1.1);
 }
 </style>

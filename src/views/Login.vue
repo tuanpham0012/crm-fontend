@@ -32,10 +32,8 @@
 									</div>
 								</div>
 
-								<div class="col-6 collapse-brand">
-									<a href="#" class="logo">
+								<div class="logo">
 										<img src="../assets/images/blue.png" />
-									</a>
 								</div>
 							</div>
 						</div>
@@ -228,6 +226,9 @@ background: linear-gradient(0deg, rgba(238,243,244,1) 66%, rgba(181,186,224,1) 1
 
 .btn{
 	margin-top: 2rem;
+}
+.logo{
+	padding-left:3rem;
 }
 .logo img {
 	width: 13rem;
