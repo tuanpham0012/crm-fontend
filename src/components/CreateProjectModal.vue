@@ -85,7 +85,7 @@
                                 ) in department.staff_of_department"
                                 :key="index"
                                 :value="staff.id"
-                                
+                                :disabled="users.find((x) => x.id == staff.id)"
                               >
                                 {{ staff.user.name }}
                               </option>
@@ -109,7 +109,7 @@
                           <ul class="row-content">
                             <li v-for="(user, index) in users" :key="index">
                               <div class="user-info">
-                                <img :src="user.avatar ? user.avatar : 'https://i.pinimg.com/736x/64/81/22/6481225432795d8cdf48f0f85800cf66.jpg'" />
+                                <img :src="avatar_link(user.avatar) || 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'" />
                                 <div class="info">
                                   <a href="#">{{ user.name }}</a>
                                   <p>
@@ -197,6 +197,13 @@ export default {
      resetValue() {
       this.users = [];
       
+    },
+    avatar_link(value){
+      if(value){
+        return url.server_url + value;
+      }else{
+        return null;
+      }
     },
     toggleCloseModal(){
       this.$emit('close-modal');

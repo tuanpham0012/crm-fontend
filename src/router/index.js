@@ -12,6 +12,7 @@ import Home from '../views/Home.vue';
 
 import Departments from '../views/departments/Departments.vue';
 import DepartmentDetail from '../views/departments/DepartmentDetail.vue';
+import MyDepartment from '../views/departments/MyDepartment.vue';
 
 import Customers from '../views/customers/Customers.vue';
 import CustomerDetail from '../views/customers/CustomerDetail.vue';
@@ -74,9 +75,15 @@ const routes = [
         meta: { requiresAuth: true }
     },
     {
-        path: '/department/detail/:id',
+        path: '/departments/detail/:id',
         name: 'department-detail',
         component: DepartmentDetail,
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/department',
+        name: 'my-department',
+        component: MyDepartment,
         meta: { requiresAuth: true }
     },
     {
@@ -121,6 +128,7 @@ const routes = [
         component: MyCustomerList,
         meta: { requiresAuth: true },
     },
+
     {
         path: '/projects',
         name: 'projects',
@@ -147,6 +155,7 @@ router.beforeEach( (to, from, next) =>{
                 name: 'login'
             });
         }else{
+            
             axios.get(user.USER_INFO,
                 { headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),}
             }).then(res =>{

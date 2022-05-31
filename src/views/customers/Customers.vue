@@ -2,225 +2,14 @@
   <Loading />
   <div class="main-panel">
     <div class="content-wrapper">
-      <base-modal
-        v-if="modalCreate"
-        title="Thêm mới khách hàng"
-        :size="true"
-        @closeModal="toggleModalCreate()"
-      >
-        <template v-slot:body>
-          <div class="col-12">
-            <div class="card">
-              <div class="card-body">
-                <form class="form-sample">
-                  <div class="row bd">
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label"
-                          >Tên khách hàng</label
-                        >
-                        <div class="col-sm-9">
-                          <input
-                            type="text"
-                            class="form-control"
-                            v-model="customer_create.name"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Email</label>
-                        <div class="col-sm-9">
-                          <input
-                            type="email"
-                            class="form-control"
-                            v-model="customer_create.email"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label"
-                          >Điện thoại</label
-                        >
-                        <div class="col-sm-9">
-                          <input
-                            type="text"
-                            class="form-control"
-                            @keypress="isNumber($event)"
-                            v-model="customer_create.phone"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Địa chỉ</label>
-                        <div class="col-sm-9">
-                          <input
-                            type="text"
-                            class="form-control"
-                            v-model="customer_create.address"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Ngày sinh</label>
-                        <div class="col-sm-9">
-                          <input
-                            type="date"
-                            class="form-control"
-                            v-model="customer_create.date_of_birth"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Giới tính</label>
-                        <div class="col-sm-9">
-                          <select
-                            class="form-control"
-                            v-model="customer_create.gender"
-                          >
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label"
-                          >Mối quan hệ</label
-                        >
-                        <div class="col-sm-9">
-                          <select
-                            class="form-control"
-                            v-if="typeCustomer"
-                            v-model="customer_create.type_of_customer_id"
-                          >
-                            <option
-                              v-for="(type, index) in typeCustomer"
-                              :key="index"
-                              :value="type.id"
-                            >
-                              {{ type.type }}
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Địa chỉ</label>
-                        <div class="col-sm-9">
-                          <input
-                            type="text"
-                            class="form-control"
-                            v-model="customer_create.address"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label
-                          for="exampleInputEmail2"
-                          class="col-sm-3 col-form-label"
-                          >Sản phẩm quan tâm</label
-                        >
-                        <div class="col-sm-6">
-                          <select
-                            class="form-control"
-                            style="margin-top: 1rem"
-                            v-model="interest"
-                            v-if="typeOfProduct"
-                          >
-                            <option value="-1" disabled>
-                              -- Chọn mặt hàng quan tâm --
-                            </option>
-                            <option
-                              v-for="(type, index) in typeOfProduct"
-                              :key="index"
-                              :value="type.id"
-                              :disabled="
-                                customer_create.interest.findIndex(
-                                  (x) => x.type_of_product_id == type.id
-                                ) >= 0
-                              "
-                            >
-                              {{ type.type }}
-                            </option>
-                          </select>
-                        </div>
-                        <div
-                          class="col-sm-3"
-                          style="
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-                          "
-                        >
-                          <button
-                            type="button"
-                            class="btn btn-sm btn-gradient-info"
-                            :disabled="interest == -1"
-                            @click="addInterestProduct()"
-                          >
-                            Thêm
-                          </button>
-                        </div>
+      
+      <!-- thêm mới khách hàng -->
 
-                        <div class="col-sm-12">
-                          <ul
-                            class="list-interest"
-                            v-if="
-                              customer_create.interest &&
-                              customer_create.interest.length > 0
-                            "
-                          >
-                            <li
-                              v-for="(type, index) in customer_create.interest"
-                              :key="index"
-                            >
-                              <button
-                                type="button"
-                                @click="removeInterest(index)"
-                                class="close"
-                              >
-                                &times;</button
-                              >{{ type.type_of_product.type }}
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </template>
-        <template v-slot:footer>
-          <button type="button" class="btn btn-sm btn-info" @click="create()">
-            Xác nhận
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-secondary"
-            @click="toggleModalCreate()"
-          >
-            Đóng
-          </button>
-        </template>
-      </base-modal>
+      <CreateCustomerModal 
+        v-if="modalCreate"
+        @closeModal="toggleModalCreate()"
+        @update="getList()"
+      />
 
       <!-- tải file khách hàng -->
       <base-modal
@@ -241,7 +30,7 @@
                           >Danh sách khách hàng</label
                         >
                         <div class="input-group mb-3">
-                          <input type="file" class="form-control" name="list-customer" id="inputGroupFile" @change="uploadFile" ref="file">
+                          <input type="file" class="form-control" name="list-customer" id="inputGroupFile" ref="file">
                           <label class="input-group-text" for="inputGroupFile">Upload</label>
                         </div>
                       </div>
@@ -287,51 +76,9 @@
                   <div class="row bd">
                     <div class="col-md-12">
                       <div class="form-group row">
-                        <label class="col-sm-3 col-form-label"
-                          >Chọn phòng ban</label
-                        >
-                        <div class="col-sm-6 fill-select">
-                          <select
-                            class="form-control form-control-sm"
-                            v-if="typeCustomer"
-                            v-model="department_id"
-                          >
-                            <option value="-1" selected>
-                              --Chọn phòng ban--
-                            </option>
-                            <option
-                              v-for="(department, index) in departments"
-                              :key="index"
-                              :value="department.id"
-                            >
-                              {{ department.name }}
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12">
-                      <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Nhân viên</label>
                         <div class="col-sm-6 fill-select">
-                          <select
-                            class="form-control form-control-sm"
-                            v-if="typeCustomer"
-                            v-model="staff_id"
-                            :disabled="staffs && staffs.length == 0"
-                          >
-                            <option value="-1" selected>
-                              --Chọn nhân viên--
-                            </option>
-                            <option
-                              v-if="staffs"
-                              v-for="(staff, index) in staffs"
-                              :key="index"
-                              :value="staff.user_id"
-                            >
-                              {{ staff.user.name }}
-                            </option>
-                          </select>
+                          <select-list :listProps="listStaffs" @returnData="selectReturn"></select-list>
                         </div>
                       </div>
                     </div>
@@ -342,7 +89,7 @@
                           class="input-check"
                           v-model="assignNew"
                         />
-                        <label>Cập nhật người phụ trách mới</label>
+                        <label>Ghi đè người phụ trách</label>
                       </div>
                     </div>
                   </div>
@@ -371,6 +118,7 @@
         v-if="modalCustomerInfo"
         title="Thông tin khách hàng"
         :size="true"
+        :height="true"
         @closeModal="toggleModalCustomerInfo()"
       >
         <template v-slot:body>
@@ -397,7 +145,7 @@
         v-if="modalUpdateTypeCustomer"
         :listCustomer="selectCustomer"
         @close-modal="toggleModalUpdateTypeCustomer()"
-        @update="getList(currentPage, search, type_of_customer, isDeleted)" />
+        @update="getList()" />
          
 
       <!--Cập nhật quan hệ khách hàng -->
@@ -407,7 +155,7 @@
       <div class="page-header">
         <h3 class="page-title">Danh sách khách hàng</h3>
         <nav aria-label="breadcrumb">
-          <div class="btn-action">
+          <div class="btn-action" v-if="$store.getters.getDepartmentID == 2">
             <button
               type="button"
               @click="toggleCreateCustomerList()"
@@ -429,6 +177,7 @@
               data-toggle="dropdown"
               aria-expanded="false"
               :class="{ disabled: selectCustomer.length == 0 }"
+              v-if="$store.getters.getPositionID == 1 || $store.getters.getPositionID == 2"
             >
               Hành động
             </button>
@@ -582,8 +331,8 @@
                       <td :class="{ updating: !customer.contacts }">
                         {{
                           customer.contacts
-                            ? customer.contacts.user.name
-                            : "( Đang cập nhật )"
+                            ? customer.contacts.name
+                            : "( Chưa cập nhật )"
                         }}
                       </td>
                       <td :class="{ updating: !customer.user_id }">
@@ -659,7 +408,8 @@ import Loading from "../../components/Loading.vue";
 import CustomerInfoModal from "../../components/CustomerInfoModal.vue";
 import SendMailModal from "../../components/SendMailModal.vue";
 import UpdateTypeCustomerModal from "../../components/UpdateTypeCustomerModal.vue";
-
+import SelectList from "../../components/SelectList.vue";
+import CreateCustomerModal from "../../components/CreateCustomerModal.vue";
 
 import moment from "moment/min/moment-with-locales";
 moment.locale("vi");
@@ -671,6 +421,9 @@ export default {
     CustomerInfoModal,
     SendMailModal,
     UpdateTypeCustomerModal,
+    SelectList,
+    CreateCustomerModal,
+
   },
   data() {
     return {
@@ -687,21 +440,13 @@ export default {
       search: "",
       type_of_customer: -1,
       isDeleted: 0,
-      customer_create: {
-        name: "",
-        email: "",
-        phone: "",
-        gender: "Nam",
-        interest: [],
-        address: "",
-        type_of_customer_id: "1",
-      },
       interest: -1,
       staffs: [],
       select: false,
       selectCustomer: [],
       isCheckAll: false,
       customerFile: null,
+      previewImage:null
     };
   },
   computed: {
@@ -726,13 +471,18 @@ export default {
     departments() {
       return this.$store.state.baseData.staff ?? null;
     },
+    listStaffs(){
+      return this.$store.state.customers
+        ? this.$store.state.customers.staffs
+        : null;
+    }
   },
   watch: {
     currentPage() {
-      this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
+      this.getList();
     },
     type_of_customer() {
-      this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
+      this.getList();
     },
     department_id() {
       var department = this.departments.filter(
@@ -745,11 +495,15 @@ export default {
       console.log(this.interests);
     },
     isDeleted(){
-      this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
-    }
+      this.getList();
+    },
   },
   created() {
-    this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
+    if(!this.customers){
+      this.getList();
+    }else{
+      this.currentPage = this.customers.current_page;
+    }
     //this.$store.dispatch("getListDepartment");
   },
   methods: {
@@ -807,13 +561,12 @@ export default {
             timer: 5000,
           });
           this.toggleCreateCustomerList();
-          this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
+          this.getList();
         })
         .catch((err) => {
           console.log(err);
         });
     },
-
     dateTime(value) {
       return moment(value).utc().format("DD/MM/YYYY");
     },
@@ -852,52 +605,18 @@ export default {
       }
     },
     toggleSearch() {
-      this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
+      this.getList();
     },
-    getList(page, search, type, deleted) {
+    getList() {
       this.$store.dispatch("getListCustomer", {
-        page: page,
-        search: search,
-        type: type,
-        deleted: deleted,
+        page: this.currentPage,
+        search: this.search,
+        type: this.type_of_customer,
+        deleted: this.isDeleted,
       });
     },
-    addInterestProduct() {
-      this.customer_create.interest.push({
-        type_of_product_id: this.interest,
-        type_of_product: {
-          type: this.typeOfProduct.find((x) => x.id == this.interest).type,
-        },
-      });
-      this.interest = -1;
-      console.log(this.customer_create.interest);
-    },
-    removeInterest(index) {
-      this.customer.interest.splice(index, 1);
-    },
-    async create() {
-      await axios({
-        method: "POST",
-        url: url.customer.CREATE,
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-          Accept: "application/json",
-        },
-        data: this.customer_create,
-      })
-        .then((res) => {
-          console.log(res.data);
-          this.toggleModalCreate();
-          cuteToast({
-            type: "success",
-            message: res.data.message,
-            timer: 5000,
-          });
-          this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    selectReturn(value){
+      this.staff_id = value.id;
     },
     async assignSale() {
       console.log(this.selectCustomer + " - staff: " + this.staff_id);
@@ -916,12 +635,13 @@ export default {
       })
         .then((res) => {
           console.log(res.data);
+          this.toggleModalLead();
           cuteToast({
               type: "success",
               message: res.data.message,
               timer: 3000,
             });
-          this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
+          this.getList();
         })
         .catch((err) => {
           console.log(err);
@@ -953,7 +673,7 @@ export default {
             },
           })
             .then((res) => {
-              this.getList(this.currentPage, this.search, this.type_of_customer, this.isDeleted);
+              this.getList();
               cuteToast({
                 type: "success",
                 message: res.data.message,

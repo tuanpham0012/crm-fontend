@@ -1,7 +1,10 @@
 const base_url = 'http://127.0.0.1:8000/api/'
 
+export const server_url = 'http://127.0.0.1:8000/storage/images/'
+
 export const home = {
     GET_BASE_DATA : base_url + 'home/get_base_data',
+    HOME_DATA: base_url + 'home/home_data',
 };
 
 export const user = {
@@ -15,7 +18,8 @@ export const staff = {
     SHOW: base_url + 'staff/',
     UPDATE: base_url + 'staff/',
     REMOVE_MULTIPLE_STAFF: base_url + 'staffs/remove_multiple',
-    UPDATE_DEPARTMENT: base_url + 'staffs/update_department'
+    UPDATE_DEPARTMENT: base_url + 'staffs/update_department',
+    UPDATE_AVATAR: base_url + 'staffs/update_avatar/',
 };
 export const departments = {
     BASE : base_url + 'department/',
@@ -40,6 +44,7 @@ export const customer = {
     DELETE_MULTIPLE_CUSTOMER: base_url + 'customer/multiple_delete',
     CREATE_MUTILPLE_CUSTOMER: base_url + 'customer/multiple_create',
     CONTACT: base_url + 'contact/',
+    CARE: base_url + 'cares/',
 }
 export const tasks = {
     BASE : base_url + 'tasks/my_task',
@@ -67,6 +72,7 @@ export const projects = {
     DELETE_PARTICIPANT : base_url + 'projects/delete_participant/',
     CONFIRM_PARTICIPANT : base_url + 'projects/confirm_participant/',
     JOIN_PROJECT: base_url + 'projects/join/',
+    NOTE : base_url + 'project_note/',
 };
 
 export const notification = {

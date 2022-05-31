@@ -3,6 +3,7 @@
     <base-modal
       title="Thông tin công việc"
       :size="true"
+      :height="true"
       @closeModal="toggleModalDetail()"
     >
       <template v-slot:body>
@@ -144,7 +145,7 @@
                       <div class="row-info">
                         <span class="row-title">Người giao việc: </span>
                         <div class="user-info">
-                          <img src="../assets/images/faces/user.jpg" />
+                          <img :src=" avatar_link(taskInfo.user.avatar) || 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'" />
                           <div class="info">
                             <a href="#">{{ taskInfo.user.name }}</a>
                             <p>
@@ -167,7 +168,7 @@
                             :key="index"
                           >
                             <div class="user-info">
-                              <img src="../assets/images/faces/user.jpg" />
+                              <img :src=" avatar_link(user.user.avatar) || 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'" />
                               <div class="info">
                                 <a href="#">{{ user.user.name }}</a>
                                 <p>
@@ -272,7 +273,7 @@
                           <ul class="row-content">
                             <li v-for="(user, index) in users" :key="index">
                               <div class="user-info">
-                                <img src="../assets/images/faces/user.jpg" />
+                                <img :src=" avatar_link(info.user.avatar) || 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'" />
                                 <div class="info">
                                   <a href="#">{{ user.name }}</a>
                                   <p>
@@ -644,6 +645,13 @@ export default {
       if (value) {
         this.customer = value;
         this.customer_name = value.name;
+      }
+    },
+    avatar_link(value){
+      if(value){
+        return url.server_url + value;
+      }else{
+        return null;
       }
     },
     searchName(key) {

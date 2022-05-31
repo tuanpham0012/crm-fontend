@@ -4,7 +4,7 @@
     v-if="note"
   >
     <img
-      :src ="note.user.avatar ?? 'https://static2.yan.vn/YanNews/202005/202005220338210409-bee6f138-0608-4d56-bce3-27148a855654.png'"
+      :src =" avatar_link(note.user.avatar) || 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'"
       alt=""
     />
     <div class="note-card">
@@ -26,7 +26,7 @@
     <!-- v-if="id == note.id" -->
       <div class="action" v-if="id == note.id">
         <div class="note-action" v-if="!edit">
-          <button type="button" class="btn btn-icon btn-react" @click="toggleEdit()"><i class="mdi mdi-heart"></i></button>
+          <button type="button" class="btn btn-icon btn-react"><i class="mdi mdi-heart"></i></button>
           <div class="btn-edit" v-if="note.user_id == user_id">
             <button type="button" class="btn btn-icon btn-action" @click="toggleEdit()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
             <button type="button" class="btn btn-icon btn-action" @click="toggleDelete(note.id)"><i class="mdi mdi-delete-forever"></i></button>
@@ -73,6 +73,13 @@ export default {
   methods: {
     dateTime(value) {
       return moment(value).startOf().fromNow();
+    },
+    avatar_link(value){
+      if(value){
+        return url.server_url + value;
+      }else{
+        return null;
+      }
     },
     toggleEdit(){
       this.edit = !this.edit;

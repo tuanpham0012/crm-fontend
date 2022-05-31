@@ -316,7 +316,7 @@ export default {
   padding: 0.5rem;
 }
 .active {
-  color: black;
+  color: rgb(255, 94, 0);
   border-bottom: 3px solid rgb(255, 94, 0);
   pointer-events: none;
 }

@@ -90,11 +90,11 @@
 
     <div class="content-wrapper">
       <div class="page-header">
-        <h3 class="page-title">{{ department ? department.name : null }}</h3>
+        <h3 class="page-title">Phòng ban</h3>
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item active">
-              <a href="#" @click.stop="$router.go(-1)"> Phòng ban </a>
+              Phòng ban
             </li>
             <li class="breadcrumb-item active" aria-current="page">
               {{ department ? department.name : null }}
@@ -306,10 +306,14 @@ export default {
       return arr ? arr.user.name : "Chưa cập nhật";
     },
     load() {
-      this.$store.dispatch("getListStaffDepartment", {
-        id: this.$route.params.id,
-        upload: true,
-      });
+      if(this.$store.getters.getDepartmentID){
+        this.$store.dispatch("getListStaffDepartment", {
+          id: this.$store.getters.getDepartmentID,
+          upload: true,
+        });
+      }else{
+        this.$route.push({ name: 'error_404'});
+      }
     },
     toggleModalCreateTask(value) {
       let u = this.$store.state.staffDepartment.staffs;

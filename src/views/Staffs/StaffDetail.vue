@@ -12,6 +12,12 @@
           @close-modal="toggleModalCreate()"
           @update="viewDetail"/>
 
+    <ChangePasswordModal
+          v-if="modalChangePass"
+          :email="info.email"
+          :role="true"
+          @close-modal="toggleModalChangePass()"
+        />
 
     <div class="content-wrapper">
       <div class="page-header">
@@ -36,8 +42,8 @@
                     <img
                       :src="
                         info.avatar
-                          ? info.avatar
-                          : 'https://bloganh.net/wp-content/uploads/2021/03/chup-anh-dep-anh-sang-min.jpg'
+                          ? avatar_link(info.avatar)
+                          : 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'
                       "
                       alt=""
                     />
@@ -74,7 +80,7 @@
                     data-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    Hành động
+                    Thao tác
                   </button>
                   <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                     <a
@@ -91,7 +97,7 @@
                     >
                     <a
                       class="dropdown-item"
-                      @click="toggleModalSendMail()"
+                      @click="toggleModalChangePass()"
                       href="#"
                       >Đổi mật khẩu</a
                     >
@@ -289,8 +295,12 @@
 <script>
 import Loading from "../../components/Loading.vue";
 import CreateTaskModal from "../../components/CreateTaskModal.vue";
+import ChangePasswordModal from "../../components/ChangePasswordModal.vue";
+
 import moment from "moment/min/moment-with-locales";
 moment.locale("vi");
+
+import * as url from "../../config";
 
 import UpdateInfomationModal from "../../components/UpdateInfomationModal.vue";
 export default {
@@ -298,11 +308,13 @@ export default {
     Loading,
     UpdateInfomationModal,
     CreateTaskModal,
+    ChangePasswordModal,
   },
   data() {
     return {
       modalUpdate: false,
       modalCreateTask: false,
+      modalChangePass: false,
       lUser:[],
     };
   },
@@ -317,7 +329,6 @@ export default {
         this.info.department = this.info.staff_of_department.departments.name ?? 'Chưa cập nhật';
         this.lUser.push(this.info);
       }
-      console.log(this.lUser);
     }
   },
   created() {
@@ -327,6 +338,16 @@ export default {
     });
   },
   methods: {
+    avatar_link(value){
+      if(value){
+        return url.server_url + value;
+      }else{
+        return null;
+      }
+    },
+    toggleModalChangePass() {
+      this.modalChangePass = !this.modalChangePass;
+    },
     toggleModalUpdate() {
       this.modalUpdate = !this.modalUpdate;
     },

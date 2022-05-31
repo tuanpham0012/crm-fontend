@@ -25,12 +25,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-if="callHistory" v-for="(item, index) in callHistory" :key="index">
+            <tr v-if="callHistory && callHistory.length > 0" v-for="(item, index) in callHistory" :key="index">
               <td scope="row">{{ index + 1}}</td>
               <td>{{ item.user.name}}</td>
               <td>{{ item.phone_contacts }}</td>
               <td>
-                <label class="badge badge-info">{{ item.call_status_id }}</label>
+                <label class="badge badge-info">{{ item.status }}</label>
               </td>
               <td>{{ item.time }}</td>
               <td>{{ item.content}}</td>
@@ -38,6 +38,9 @@
               <td>
                 {{ item.note}}
               </td>
+            </tr>
+            <tr v-else>
+              <td>Không có dữ liệu hiển thị</td>
             </tr>
           </tbody>
         </table>

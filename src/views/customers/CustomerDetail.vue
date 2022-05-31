@@ -2,94 +2,48 @@
   <div class="main-panel">
     <Loading />
     <base-modal
-      v-if="modalLead"
-      title="Gán người phụ trách"
-      :size="false"
-      @closeModal="toggleModalLead()"
-    >
-      <template v-slot:body>
-        <div class="col-12">
-          <div class="card">
-            <div class="card-body">
-              <form class="form-sample">
-                <div class="row bd">
-                  <div class="col-md-12">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label"
-                        >Chọn phòng ban</label
-                      >
-                      <div class="col-sm-6 fill-select">
-                        <select
-                          class="form-control form-control-sm"
-                          v-if="typeCustomer"
-                          v-model="department_id"
-                        >
-                          <option value="-1" selected>
-                            --Chọn phòng ban--
-                          </option>
-                          <option
-                            v-for="(department, index) in departments"
-                            :key="index"
-                            :value="department.id"
-                          >
-                            {{ department.name }}
-                          </option>
-                        </select>
+        v-if="modalLead"
+        title="Gán người phụ trách"
+        :size="false"
+        @closeModal="toggleModalLead()"
+      >
+        <template v-slot:body>
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <form class="form-sample bd" id="formImage">
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Nhân viên</label>
+                        <div class="col-sm-6 fill-select">
+                          <select-list :listProps="listStaffs" @returnData="selectReturn"></select-list>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Nhân viên</label>
-                      <div class="col-sm-6 fill-select">
-                        <select
-                          class="form-control form-control-sm"
-                          v-if="typeCustomer"
-                          v-model="staff_id"
-                          :disabled="staffs && staffs.length == 0"
-                        >
-                          <option value="-1" selected>
-                            --Chọn nhân viên--
-                          </option>
-                          <option
-                            v-if="staffs"
-                            v-for="(staff, index) in staffs"
-                            :key="index"
-                            :value="staff.user_id"
-                            :disabled="
-                              customer.contacts.user_id == staff.user_id
-                            "
-                            :class="{
-                              selected:
-                                customer.contacts.user_id == staff.user_id,
-                            }"
-                          >
-                            {{ staff.user.name + " - " + staff.user_id }}
-                          </option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </form>
+                </form>
+                <br/>
+                <br/><br/>
+                <br/><br/>
+                <br/>
+              </div>
             </div>
           </div>
-        </div>
-      </template>
-      <template v-slot:footer>
-        <button type="button" class="btn btn-sm btn-info" @click="assignSale()">
-          Xác nhận
-        </button>
-        <button
-          type="button"
-          class="btn btn-sm btn-secondary"
-          @click="toggleModalLead()"
-        >
-          Hủy
-        </button>
-        
-      </template>
-    </base-modal>
+          <br/>
+          <br/>
+        </template>
+        <template v-slot:footer>
+          <button type="button" class="btn btn-sm btn-info" @click="assignSale()">
+            Xác nhận
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            @click="toggleModalLead()"
+          >
+            Hủy
+          </button>
+        </template>
+      </base-modal>
 
     <SendMailModal
         v-if="modalSendMail"
@@ -241,6 +195,7 @@
                         class="dropdown-item"
                         href="#"
                         @click="toggleModalLead()"
+                        v-if="$store.getters.getPositionID == 1 || $store.getters.getPositionID == 2"
                         >Gán người phụ trách</a
                       >
                     </div>
@@ -271,7 +226,7 @@
                   <div class="row-info">
                     <span class="row-title">Zalo :</span>
                     <span class="row-content">
-                      Đang cập nhật
+                      {{ customer ? customer.zalo : "Chưa cập nhật" }}
                     </span>
                   </div>
                 </div>
@@ -285,7 +240,7 @@
                     <span class="row-title">Người phụ trách:</span>
                     <span class="row-content">{{
                       customer.contacts
-                        ? customer.contacts.user.name
+                        ? customer.contacts.name
                         : "Đang cập nhật"
                     }}</span>
                   </div>
@@ -298,7 +253,7 @@
                   <div class="row-info">
                     <span class="row-title">Liên hệ cuối:</span>
                     <span class="row-content">{{
-                      customer.call_histories ? dateTime(customer.call_histories[1].created_at) : "Đang cập nhật"
+                      customer.call_histories && customer.call_histories.length > 0 ? dateTime(customer.call_histories[0].created_at) : "Đang cập nhật"
                     }}</span>
                   </div>
                   
@@ -334,6 +289,7 @@ import BaseModal from "../../components/Modal.vue";
 import Loading from "../../components/Loading.vue";
 import CustomerTabVue from "../../components/CustomerTab.vue";
 import SendMailModal from "../../components/SendMailModal.vue";
+import SelectList from "../../components/SelectList.vue";
 
 import moment from "moment/min/moment-with-locales";
 moment.locale("vi");
@@ -344,6 +300,7 @@ export default {
     Loading,
     CustomerTabVue,
     SendMailModal,
+    SelectList,
   },
   data() {
     return {
@@ -353,7 +310,7 @@ export default {
       staff_id: -1,
       staffs: [],
       modalSendMail: false,
-      cus: []
+      cus: [],
     };
   },
   computed: {
@@ -370,9 +327,11 @@ export default {
     customer() {
       return this.$store.state.customer;
     },
-    departments() {
-      return this.$store.state.baseData ? this.$store.state.baseData.staff : null;
-    },
+    listStaffs(){
+      return this.$store.state.customers
+        ? this.$store.state.customers.staffs
+        : null;
+    }
   },
   watch: {
     department_id() {
@@ -402,11 +361,23 @@ export default {
     dateTime(value) {
       return moment(value).utc().format("HH:mm:ss DD-MM-YYYY");
     },
+    selectReturn(value){
+      this.staff_id = value.id;
+    },
     mailUpdate(){
       this.$store.dispatch("getCustomerInfo", { id: this.$route.params.id , upload: false})
       this.modalSendMail = false;
     },
+    
     async assignSale() {
+      if(this.staff_id == -1 || this.staff_id == null){
+        cuteToast({
+            type: "error",
+            message: 'Chưa chọn người phụ trách',
+            timer: 5000,
+          });
+          return;
+      }
       await axios({
         method: "POST",
         url: url.customer.ASSIGN_SALE,
@@ -415,16 +386,17 @@ export default {
           Accept: "application/json",
         },
         data: {
-          selected: [this.customer.id],
-          id: this.staff_id,
+          listCustomer: [this.customer.id],
+          user_id: this.staff_id,
           update: true,
         },
       })
         .then((res) => {
-          this.reLoadPage();
+          this.$store.dispatch("getCustomerInfo", { id: this.$route.params.id , upload: true});
+          console.log(res.data);
           cuteToast({
             type: "success",
-            message: res.data,
+            message: res.data.message,
             timer: 5000,
           });
           this.toggleModalLead();
@@ -471,7 +443,6 @@ i {
 .card .card-body {
   padding: 0.4rem;
 }
-
 .card-title {
   display: flex;
   justify-content: space-between;
@@ -491,7 +462,7 @@ i {
   padding-bottom: 0.1rem;
   font-weight: 600;
   margin-right: 0.4rem;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 .form-group {
   margin-bottom: 0.5rem;
@@ -501,7 +472,21 @@ i {
   font-weight: 500;
   padding: 1rem;
 }
-.btn {
-  margin: 0 0.2rem;
+.form-group-checkbox {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.form-group-checkbox label {
+  margin: 0;
+}
+.input-check {
+  margin: 0.5rem 1rem;
+}
+.bd {
+  border-bottom: 1px gainsboro solid;
+  margin-bottom: 2rem;
 }
 </style>

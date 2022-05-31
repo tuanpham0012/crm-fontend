@@ -6,21 +6,21 @@
       <div class="add" @click="toggleAdd()"><i class="mdi mdi-playlist-plus"></i></div>
     </div>
     <div class="add-to-do" v-if="add">
-      <input type="text" class="ip-add"/>
+      <input type="text" class="ip-add" v-model="newTask" />
       <div class="action">
-          <button type="button" class="btn btn-icon"><i class="mdi mdi-check"></i></button>
+          <button type="button" class="btn btn-icon" @click="addTask()"><i class="mdi mdi-check"></i></button>
           <button type="button" @click="toggleAdd()" class="btn btn-icon"><i class="mdi mdi-close"></i></button>
       </div>
     </div>
     <div class="list">
-      <div class="item" v-for="toDo in toDos" :key="toDo.id">
+      <div class="item" v-for="(toDo,i) in toDos" :key="toDo.id">
         <div class="content">
           <input type="checkbox" :id="toDo.id" v-model="toDo.done"/>
           <label class="work" :class="{'done' : toDo.done}" :for="toDo.id">{{ toDo.name }}</label>
         </div>
         <div class="action">
-          <button type="button" class="btn btn-icon"><i class="mdi mdi-auto-fix"></i></button>
-          <button type="button" class="btn btn-icon"><i class="mdi mdi-delete"></i></button>
+          <!-- <button type="button" class="btn btn-icon"><i class="mdi mdi-auto-fix"></i></button> -->
+          <button type="button" class="btn btn-icon" @click="del(i)"><i class="mdi mdi-delete"></i></button>
         </div>
       </div>
       
@@ -33,26 +33,32 @@ import { mapMutations} from 'vuex'
     data() {
       return {
         add: false,
+        newTask: '',
         toDos:[
-          {id: 1,name: 'Đi chơi', done: false},
-          {id: 2,name: 'Đi ăn', done: false},
-          {id: 3,name: 'Nấu cơm', done: true},
-          {id: 4,name: 'Đi chơi', done: false},
-          {id: 5,name: 'Đi chơi', done: true},
-          {id: 6,name: 'Đi chơi', done: false},
-          {id: 7,name: 'Đi chơi', done: false},
-          {id: 8,name: 'Đi chơi', done: false},
-          {id: 8,name: 'Đi chơi', done: false},
-          {id: 8,name: 'Đi chơi', done: false},
-          {id: 8,name: 'Đi chơi', done: false},
-          {id: 8,name: 'Đi chơi', done: false},
-          
+          {id: 1,name: 'Gọi điện khách hàng', done: false},
+          {id: 2,name: 'Hẹn gặp', done: false},
+          {id: 3,name: 'Tạo khách hàng', done: true},
+          {id: 4,name: 'Tư vấn', done: false},
+          {id: 5,name: 'Kiểm tra', done: true},
+          {id: 6,name: 'Chấm công', done: false},
         ]
       }
     },
     methods: {
       toggleAdd(){
         this.add = !this.add;
+      },
+      addTask(){
+        let e = {
+          id: this.toDos.length,
+          name: this.newTask,
+          done: false,
+        }
+        this.toDos.splice(0, 0, e);
+        this.newTask = '';
+      },  
+      del(i){
+        this.toDos.splice(i, 1);
       },
       ...mapMutations(['toggleToDoList']),
     },

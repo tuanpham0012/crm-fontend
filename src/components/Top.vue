@@ -25,7 +25,7 @@
 					</div>
 				</form>
 			</div>
-			<ul class="navbar-nav navbar-nav-right">
+			<ul class="navbar-nav navbar-nav-right"  v-if="user">
 				<li class="nav-item nav-profile dropdown">
 					<a
 						class="nav-link dropdown-toggle"
@@ -36,7 +36,7 @@
 					>
 						<div class="nav-profile-img">
 							<img
-								:src="(user && user.avatar) ? user.avatar : 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'"
+								:src=" avatar_link(user.avatar) || 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'"
 								alt="image"
 							/>
 							<span class="availability-status online"></span>
@@ -47,11 +47,11 @@
 					</a>
 					<div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
 						<router-link class="dropdown-item" :to="{name: 'account-detail'}">
-							<i class="mdi mdi-cached mr-2 text-success"></i> Thông tin cá nhân
+							<i class="mdi mdi-account-circle mr-2 text-success"></i> Thông tin cá nhân
 						</router-link>
 						<div class="dropdown-divider"></div>
 						<a class="dropdown-item" href="#" @click="signOut()">
-							<i class="mdi mdi-logout mr-2 text-primary"></i> Signout
+							<i class="mdi mdi-logout mr-2 text-primary"></i> Đăng xuất
 						</a>
 					</div>
 				</li>
@@ -59,62 +59,6 @@
 					<a class="nav-link">
 						<i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
 					</a>
-				</li>
-				<li class="nav-item dropdown">
-					<a
-						class="nav-link count-indicator dropdown-toggle"
-						id="messageDropdown"
-						href="#"
-						data-toggle="dropdown"
-						aria-expanded="false"
-					>
-						<i class="mdi mdi-email-outline"></i>
-						<span class="count-symbol bg-warning"></span>
-					</a>
-					<div
-						class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
-						aria-labelledby="messageDropdown"
-					>
-						<h6 class="p-3 mb-0">Messages</h6>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item preview-item">
-							<div class="preview-thumbnail">
-								<img src="../assets/images/faces/face4.jpg" alt="image" class="profile-pic" />
-							</div>
-							<div
-								class="preview-item-content d-flex align-items-start flex-column justify-content-center"
-							>
-								<h6 class="preview-subject ellipsis mb-1 font-weight-normal">Mark send you a message</h6>
-								<p class="text-gray mb-0">1 Minutes ago</p>
-							</div>
-						</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item preview-item">
-							<div class="preview-thumbnail">
-								<img src="../assets/images/faces/face2.jpg" alt="image" class="profile-pic" />
-							</div>
-							<div
-								class="preview-item-content d-flex align-items-start flex-column justify-content-center"
-							>
-								<h6 class="preview-subject ellipsis mb-1 font-weight-normal">Cregh send you a message</h6>
-								<p class="text-gray mb-0">15 Minutes ago</p>
-							</div>
-						</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item preview-item">
-							<div class="preview-thumbnail">
-								<img src="../assets/images/faces/face3.jpg" alt="image" class="profile-pic" />
-							</div>
-							<div
-								class="preview-item-content d-flex align-items-start flex-column justify-content-center"
-							>
-								<h6 class="preview-subject ellipsis mb-1 font-weight-normal">Profile picture updated</h6>
-								<p class="text-gray mb-0">18 Minutes ago</p>
-							</div>
-						</a>
-						<div class="dropdown-divider"></div>
-						<h6 class="p-3 mb-0 text-center">4 new messages</h6>
-					</div>
 				</li>
 				<li class="nav-item dropdown">
 					<a
@@ -251,6 +195,13 @@ export default {
 	mounted() {
 	},
 	methods: {
+		avatar_link(value){
+      if(value){
+        return url.server_url + value;
+      }else{
+        return null;
+      }
+    },
 		dateTime(value) {
       return moment(value).startOf().fromNow();
     },
@@ -277,6 +228,12 @@ export default {
 					break;
 				case "customer":
 					component_name = "customer-detail";
+					break;
+				case "department":
+					component_name = "my-department";
+					break;
+				case "project":
+					component_name = "project-detail";
 					break;
 				default:
 					component_name = "home";

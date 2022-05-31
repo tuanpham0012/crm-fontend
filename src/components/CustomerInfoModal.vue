@@ -9,7 +9,7 @@
         </p>
         <p class="c-lead">
           @ {{
-            customer.contacts ? customer.contacts.user.name : "Đang cập nhật"
+            customer.contacts ? customer.contacts.name : "Chưa có người phụ trách"
           }}
         </p>
       </div>

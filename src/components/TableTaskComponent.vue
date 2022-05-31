@@ -37,7 +37,7 @@
               {{ task.task_status ? task.task_status.status : 'Đang cập nhật' }}
             </td>
             <td class="td-user">
-              <img :src="task.user.avatar ?? 'https://cms.vietnamreport.net//source/CEO/512.png'" alt="" />
+              <img :src="avatar_link(task.user.avatar) || 'https://cms.vietnamreport.net//source/CEO/512.png'" alt="" />
               {{ task.user.name }}
             </td>
             <td>
@@ -83,7 +83,7 @@
 <script>
 import moment from "moment/min/moment-with-locales";
 moment.locale("vi");
-
+import * as url from "../config";
 export default {
   props: {
     tasksProps: {
@@ -125,6 +125,13 @@ export default {
         this.loadMore = false;
       }, 500);
       console.log(this.total);
+    },
+    avatar_link(value){
+      if(value){
+        return url.server_url + value;
+      }else{
+        return null;
+      }
     },
     dateTime(value) {
       return moment(value).utc().format("HH:mm:ss DD/MM/YYYY");

@@ -68,7 +68,7 @@
                           <ul class="row-content">
                             <li v-for="(user, index) in users" :key="index">
                               <div class="user-info">
-                                <img :src="user.avatar ? user.avatar : 'https://i.pinimg.com/736x/64/81/22/6481225432795d8cdf48f0f85800cf66.jpg'" />
+                                <img :src="user.avatar ? user.avatar : 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'" />
                                 <div class="info">
                                   <a href="#">{{ user.name }}</a>
                                   <p>
@@ -133,7 +133,7 @@
               <div class="general-information">
                 <div class="header-title">
                   <p class="title">Thông tin chung</p>
-                  <div>
+                  <div v-if="$store.getters.getID == project.user_id">
                     <button class="btn btn-sm btn-mg btn-gradient-info" v-if="project.project_status_id != 4" @click="toggleModalUpdate()">Chỉnh sửa</button>
                     <button class="btn btn-sm btn-gradient-danger" v-if="project.project_status_id != 4" @click="toggleCancelProject(4)">Hủy dự án</button>
                     <button class="btn btn-sm btn-gradient-danger" v-else @click="toggleCancelProject(1)">Khôi phục</button>
@@ -175,6 +175,14 @@
                           </div>
                         </div>
                       </div>
+                      <div class="col-md-12">
+                        <div class="info-row">
+                          <label class="col-sm-4 col-form-label">Người tạo</label>
+                          <div class="col-sm-9">
+                            <p class="">{{ project.user.name || 'Đang cập nhật' }}</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div class="col-6 describe">
                       <label class="col-sm-12 col-form-label"
@@ -186,11 +194,29 @@
                   </div>
                 </div>
                 <ul class="tab-controller">
-                  <li :class="{ 'activated' : tab == 1}" @click="tab = 1">Công việc</li>
-                  <li :class="{ 'activated' : tab == 2}" @click="tab = 2">Người tham gia</li>
+                  <li :class="{ 'activated' : tab == 1}" @click="tab = 1">Trao đổi</li>
+                  <li :class="{ 'activated' : tab == 2}" @click="tab = 2">Công việc</li>
+                  <li :class="{ 'activated' : tab == 3}" @click="tab = 3">Người tham gia</li>
                 </ul>
 
-                <div class="col-lg-12" :class="{'disabled' : project.project_status_id == 4}" v-if="tab == 1">
+                <div class="col-md-12 stretch-card note" v-if="tab == 1">
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="card-content">
+                        <div>
+                          <div class="tab-content">
+                            <note-component
+                              :notesProps="project.note_of_project"
+                              :project_id="project.id"
+                            ></note-component>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-12" :class="{'disabled' : project.project_status_id == 4}" v-if="tab == 2">
 
                   <TaskDetailModal
                     :taskInfo="taskInfo"
@@ -239,7 +265,7 @@
                   <TableTaskComponent :tasksProps="tasks" @toggleTask="toggleModalDetail" />
                 </div>
 
-                <div class="col-lg-12 participant" :class="{'disabled' : project.project_status_id == 4}" v-if="tab == 2">
+                <div class="col-lg-12 participant" :class="{'disabled' : project.project_status_id == 4}" v-if="tab == 3">
 
 
                   <ul class="select-tab-participant">
@@ -273,6 +299,7 @@
                       type="button"
                       @click="toggleCloseModalAdd()"
                       class="btn btn-sm btn-mg btn-gradient-info btn-icon-text"
+                      v-if="$store.getters.getID == project.user_id"
                     >
                       <i class="mdi mdi-calendar-plus btn-icon-prepend"></i> Thêm người tham gia
                     </button>
@@ -285,7 +312,7 @@
                       <th>Nhân viên</th>
                       <th>Email</th>
                       <th>Điện thoại</th>
-                      <th>Hành động</th>
+                      <th v-if="$store.getters.getID == project.user_id" >Thao tác</th>
                     </tr>
                   </thead>
                   <tbody v-if="participants.length > 0">
@@ -294,9 +321,7 @@
                       <td class="view">
                         <img
                           :src="
-                            staff.user.avatar
-                              ? staff.user.avatar
-                              : 'https://png.pngtree.com/png-clipart/20190904/original/pngtree-hand-drawn-flat-wind-user-avatar-icon-png-image_4492039.jpg'
+                            avatar_link(staff.user.avatar) || 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'
                           "
                           alt=""
                         />
@@ -304,11 +329,11 @@
                       </td>
                       <td>{{ staff.user.email }}</td>
                       <td>{{ staff.user.phone }}</td>
-                      <td v-if="staff.accept == 1">
+                      <td v-if="staff.accept == 1 && $store.getters.getID == project.user_id">
                         <button type="button" class="btn btn-mg btn-inverse-info btn-icon" @click="toggleAssignTask(staff.user)"><i class="mdi mdi-calendar-plus"></i></button>
                         <button type="button" class="btn btn-mg btn-inverse-danger btn-icon" @click="toggleDeleteParticipant(staff.id)"><i class="mdi mdi-delete"></i></button>
                       </td>
-                      <td v-if="staff.accept == 0">
+                      <td v-if="staff.accept == 0 && $store.getters.getID == project.user_id">
                         <button type="button" class="btn btn-mg btn-inverse-info btn-icon" @click="toggleConfirmParticipant(staff.id)"><i class="mdi mdi-check"></i></button>
                         <button type="button" class="btn btn-mg btn-inverse-danger btn-icon" @click="toggleDeleteParticipant(staff.id)"><i class="mdi mdi-delete"></i></button>
                       </td>
@@ -337,6 +362,7 @@ import CreateTaskModal from "../../components/CreateTaskModal.vue";
 import TableTaskComponent from "../../components/TableTaskComponent.vue";
 import TaskDetailModal from "../../components/TaskDetailModal.vue";
 import UpdateProjectModal from "../../components/UpdateProjectModal.vue";
+import NoteComponent from "../../components/NoteOfProjectComponent.vue";
 
 import moment from "moment/min/moment-with-locales";
 moment.locale("vi");
@@ -351,6 +377,7 @@ export default {
     TaskDetailModal,
     BaseModal,
     UpdateProjectModal,
+    NoteComponent,
   },
   data() {
     return {
@@ -435,6 +462,13 @@ export default {
     viewDetail(id){
       this.load();
     },
+    avatar_link(value){
+      if(value){
+        return url.server_url + value;
+      }else{
+        return null;
+      }
+    },
     toggleModalUpdate(){
       this.modalUpdateProject = !this.modalUpdateProject;
     },
@@ -513,6 +547,7 @@ export default {
           id: this.$route.params.id,
           upload: false,
         });
+        this.users = [];
         this.modalAddParticipant = false;
       })
     },
@@ -636,7 +671,7 @@ td{
 }
 
 .activated {
-  color: black;
+  color: rgb(255, 94, 0);
   border-bottom: 3px solid rgb(255, 94, 0);
 }
 .tab-controller {

@@ -1,6 +1,18 @@
 <template lang="">
   <Loading />
   <div class="main-panel">
+
+    <UpdateInfomationModal
+      v-if="modalUpdate"
+      :info="info"
+      @close-modal="toggleModalUpdate()"
+    />
+    <ChangePasswordModal
+      v-if="modalChangePass"
+      :email="info.email"
+      @sign-out="signOut"
+      @close-modal="toggleModalChangePass()"
+    />
     <div class="content-wrapper">
       <div class="page-header">
         <h3 class="page-title">Quản lý thông tin cá nhân</h3>
@@ -15,24 +27,47 @@
               <div class="avatar-header">
                 <div class="avatar">
                   <div class="avatar-img">
-                    <img
-                      :src="info.avatar ? info.avatar : 'https://bloganh.net/wp-content/uploads/2021/03/chup-anh-dep-anh-sang-min.jpg'"
-                      alt=""
-                    />
-                    <i class="mdi mdi-grease-pencil ic-avatar"></i>
+                      <img
+                      :src="avatar_link(info.avatar) || 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'"
+                      alt="" />
                   </div>
                   
                   <div class="avatar-name">
                     <h3>{{ info.name}}</h3>
                     <p><span>UUID: </span><span>{{ info.employee_code}}</span></p>
                     <p>{{ info.role.role}}</p>
-                    <p><span>Hiện tại: </span><span>{{ info.status}}</span></p>
+                    <p>
+                      <span>Hiện tại: </span
+                      ><span>{{
+                        info.deleted == 0 ? "Đang hoạt động" : "Đã nghỉ"
+                      }}</span>
+                    </p>
                   </div>
                 </div>
                 <div class="action">
-                  <button class="btn btn-sm btn-gradient-success" @click="toggleModal()">
-                    Sửa thông tin
+                  <button
+                    id="btnGroupDrop1"
+                    type="button"
+                    class="btn-more"
+                    data-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i class="mdi mdi-dots-horizontal"></i>
                   </button>
+                  <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      @click="toggleModalUpdate()"
+                      >Cập nhật thông tin</a
+                    >
+                    <a
+                      class="dropdown-item"
+                      @click="toggleModalChangePass()"
+                      href="#"
+                      >Đổi mật khẩu</a
+                    >
+                  </div>
                 </div>
               </div>
               <div class="general-information">
@@ -41,21 +76,9 @@
                   <div class="row">
                     <div class="col-md-6">
                       <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >Họ tên</label
-                        >
+                        <label class="col-sm-3 col-form-label">Họ tên</label>
                         <div class="col-sm-9">
-                          <p class="">{{ info.name}}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >Nơi sinh</label
-                        >
-                        <div class="col-sm-9">
-                          <p class="">{{ info.home_town ? info.home_town : 'Đang cập nhật'}}</p>
+                          <p class="">{{ info.name }}</p>
                         </div>
                       </div>
                     </div>
@@ -65,56 +88,65 @@
                           >Điện thoại</label
                         >
                         <div class="col-sm-9">
-                          <p class="">{{ info.phone ? info.phone : '(Đang cập nhật)'}}</p>
+                          <p class="">
+                            {{ info.phone ? info.phone : "(Đang cập nhật)" }}
+                          </p>
                         </div>
                       </div>
                     </div>
-                    
                     <div class="col-md-6">
                       <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >Email</label
-                        >
+                        <label class="col-sm-3 col-form-label">Nơi sinh</label>
                         <div class="col-sm-9">
-                          <p class="">{{ info.email}}</p>
+                          <p class="">
+                            {{
+                              info.home_town ? info.home_town : "Đang cập nhật"
+                            }}
+                          </p>
                         </div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >Địa chỉ</label
-                        >
+                        <label class="col-sm-3 col-form-label">Email</label>
                         <div class="col-sm-9">
-                          <p class="">{{ info.address ? info.address : 'Đang cập nhật' }}</p>
+                          <p class="">{{ info.email }}</p>
                         </div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >Giới tính</label
-                        >
+                        <label class="col-sm-3 col-form-label">Địa chỉ</label>
                         <div class="col-sm-9">
-                          <p class="">{{ info.gender ? info.gender : '(Đang cập nhật)'}}</p>
+                          <p class="">
+                            {{ info.address ? info.address : "Đang cập nhật" }}
+                          </p>
                         </div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >Dân tộc</label
-                        >
+                        <label class="col-sm-3 col-form-label">Giới tính</label>
                         <div class="col-sm-9">
-                          <p class="">{{ info.ethnic ? info.enthnic : '(Đang cập nhật)'}}</p>
+                          <p class="">
+                            {{ info.gender ? info.gender : "(Đang cập nhật)" }}
+                          </p>
                         </div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >Ngày sinh</label
-                        >
+                        <label class="col-sm-3 col-form-label">Dân tộc</label>
+                        <div class="col-sm-9">
+                          <p class="">
+                            {{ info.ethnic ? info.ethnic : "(Đang cập nhật)" }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="info-row">
+                        <label class="col-sm-3 col-form-label">Ngày sinh</label>
                         <div class="col-sm-9">
                           <p class="">{{ dateTime(info.date_of_birth) }}</p>
                         </div>
@@ -122,22 +154,44 @@
                     </div>
                     <div class="col-md-6">
                       <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >CMND/CCCD</label
-                        >
+                        <label class="col-sm-3 col-form-label">Tôn giáo</label>
                         <div class="col-sm-9">
-                          <p class="">{{ info.cmnd ? info.cmnd : '(Đang cập nhật)'}}</p>
+                          <p class="">{{ dateTime(info.date_of_birth) }}</p>
                         </div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >Chữ kí</label
-                        >
+                        <label class="col-sm-3 col-form-label">Số CMTND</label>
                         <div class="col-sm-9">
-                          <p class="">{{ info.note ? info.note : '(Đang cập nhật)'}}</p>
+                          <p class="">
+                            {{ info.cmnd ? info.cmnd : "(Đang cập nhật)" }}
+                          </p>
                         </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="info-row">
+                        <label class="col-sm-3 col-form-label">Quốc tịch</label>
+                        <div class="col-sm-9">
+                          <p class="">{{ dateTime(info.date_of_birth) }}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="info-row">
+                        <label class="col-sm-3 col-form-label">Nới cấp</label>
+                        <div class="col-sm-9">
+                          <p class="">
+                            {{ info.address ? info.address : "(Đang cập nhật)" }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="info-row">
+                        <label class="col-sm-3 col-form-label">Chữ kí</label>
+                        <div class="col-sm-9" v-html="info.note"></div>
                       </div>
                     </div>
                   </div>
@@ -149,9 +203,7 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >Trường: </label
-                        >
+                        <label class="col-sm-3 col-form-label">Trường: </label>
                         <div class="col-sm-9">
                           <p class="">Trường đại học Thủ đô Hà Nội</p>
                         </div>
@@ -160,8 +212,8 @@
                     <div class="col-md-12">
                       <div class="info-row">
                         <label class="col-sm-3 col-form-label"
-                          >Trình độ: </label
-                        >
+                          >Trình độ:
+                        </label>
                         <div class="col-sm-9">
                           <p class="">Đại học</p>
                         </div>
@@ -169,9 +221,7 @@
                     </div>
                     <div class="col-md-12">
                       <div class="info-row">
-                        <label class="col-sm-3 col-form-label"
-                          >Khoa:</label
-                        >
+                        <label class="col-sm-3 col-form-label">Khoa:</label>
                         <div class="col-sm-9">
                           <p class="">Tự nhiên và công nghệ</p>
                         </div>
@@ -209,15 +259,27 @@
 </template>
 <script>
 import Loading from '../../components/Loading.vue';
+import BaseModal from '../../components/Modal.vue';
+import UpdateInfomationModal from "../../components/UpdateInfomationModal.vue";
+import ChangePasswordModal from "../../components/ChangePasswordModal.vue";
+
 import moment from "moment/min/moment-with-locales";
 moment.locale("vi");
+import * as url from "../../config";
+
 export default {
   components:{
     Loading,
+    BaseModal,
+    UpdateInfomationModal,
+    ChangePasswordModal,
   },
   data() {
     return {
       showModal: false,
+      modalChangePass: false,
+      modalUpdate: false,
+      preAvatar: '',
     }
   },
   computed:{
@@ -226,12 +288,36 @@ export default {
     }
   },
   methods: {
-    toggleModal(){
-      this.showModal = !this.showModal;
+    toggleModalUpdate() {
+      if(localStorage.getItem('token')) this.$store.dispatch('getInfo', { token: localStorage.getItem('token') });
+      this.modalUpdate = !this.modalUpdate;
     },
+    toggleModalChangePass() {
+      this.modalChangePass = !this.modalChangePass;
+    },
+    signOut() {
+			localStorage.removeItem("token");
+			this.$router.push({ name: "login" });
+		},
     dateTime(value) {
       return value ? moment(value).utc().format("DD/MM/YYYY") : 'Đang cập nhật!';
     },
+    avatar_link(value){
+      if(value){
+        return url.server_url + value;
+      }else{
+        return null;
+      }
+      
+    },
+    uploadImage(e){
+                const image = e.target.files[0];
+                const reader = new FileReader();
+                reader.readAsDataURL(image);
+                reader.onload = e =>{
+                    this.preAvatar = e.target.result;
+                };
+            },
   },
 };
 </script>
@@ -257,13 +343,12 @@ export default {
   margin: 0.5rem 1rem;
 }
 .avatar img:hover{
-  opacity: 0.99;
-  cursor: pointer;
-  border: 1px rgb(214, 215, 218) solid;
+  opacity: 0.875;
+  cursor: pointer;;
 }
-.avatar img:hover + .mdi-grease-pencil{
+/* .avatar img:hover + .mdi-grease-pencil{
   display: block;
-}
+} */
 .avatar img:active{
   transform: scale(0.98);
 }
@@ -271,14 +356,13 @@ export default {
   position: relative;
 }
 .ic-avatar{
-  font-size: 1.2rem;
-  background-color: rgb(240, 235, 235);
-  padding: 0.3rem 0.45rem;
+  font-size: 1rem;
+  background-color: #dce6f8f1;;
+  padding: 0.15rem 0.3rem;
   border-radius: 50%;
   position: absolute;
   bottom: 1rem;
-  left:72%;
-  display: none;
+  left:70%;
 
 }
 .general-information {

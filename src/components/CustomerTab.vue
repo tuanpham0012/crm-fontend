@@ -14,6 +14,9 @@
            <div v-if="customer">
               <ContactHistoryComponent :callHistory="customer.call_histories"  v-if="tabIndex == 4" />
            </div>
+           <div v-if="customer">
+              <CustomerCareComponent :cares="customer.customer_reports"  v-if="tabIndex == 5" />
+           </div>
          </div>
        </div>
 </template>
@@ -22,12 +25,14 @@ import NoteComponent from "./NoteCustomerComponent.vue";
 import SendMailHistoryComponent from "./SendMailHistoryComponent.vue";
 import TaskForCustomer from "./TaskForCustomer.vue";
 import ContactHistoryComponent from "./ContactHistoryComponent.vue";
+import CustomerCareComponent from "./CustomerCareComponent.vue";
 export default {
     components:{
       NoteComponent,
       TaskForCustomer,
       SendMailHistoryComponent,
-      ContactHistoryComponent
+      ContactHistoryComponent,
+      CustomerCareComponent
     },
     props:{
       customer:{
@@ -42,10 +47,11 @@ export default {
             id: null,
             tabIndex: 1,
             listMenu: [
-              { id: 1, name: 'Nhật kí chăm sóc'},
+              { id: 1, name: 'Ghi chú chăm sóc'},
               { id: 2, name: 'Công việc liên quan'},
               { id: 3, name: 'Lịch sử gửi email'},
               { id: 4, name: 'Lịch sử cuộc gọi'},
+              { id: 5, name: 'Nhật kí chăm sóc'},
 
             ],
         }
@@ -64,7 +70,7 @@ export default {
 }
 
 .active{
-  color: black;
+  color: rgb(255, 94, 0);
   border-bottom: 3px solid rgb(255, 94, 0);
 }
 </style>

@@ -38,7 +38,13 @@ const store = createStore({
                 return state.userInfo.token;
             else
                 return null;
-        }
+        },
+        getDepartmentID(state){
+          return state.userInfo ? state.userInfo.staff_of_department.department_id : null;
+        },
+        getPositionID(state){
+          return state.userInfo ? state.userInfo.staff_of_department.position_id : null;
+        },
     },
     mutations: {
       setInfo (state, info) {
@@ -106,7 +112,7 @@ const store = createStore({
           headers: {'Authorization': 'Bearer ' + token,
                     'Accept': 'application/json'}
         }).then( res => {
-          console.log(res.data);
+          //console.log(res.data);
           commit('setInfo', res.data);
         }).catch( err => {
           console.log(err);
@@ -120,7 +126,7 @@ const store = createStore({
           headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
                     'Accept': 'application/json'}
         }).then( res => {
-          console.log(res.data);
+          //console.log(res.data);
           commit('setListDepartment', res.data);
           commit('isLoading', false)
         }).catch( err => {

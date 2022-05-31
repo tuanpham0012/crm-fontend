@@ -208,24 +208,12 @@
                         type="text"
                         class="form-control"
                         id="text"
-                        v-model="customer.email"
-                        placeholder="Email"
+                        v-model="customer.zalo"
+                        placeholder="Zalo link"
                       />
                     </div>
                   </div>
-                  <div class="form-group row">
-                    <label for="text" class="col-sm-3 col-form-label"
-                      >Facebook:</label
-                    >
-                    <div class="col-sm-9">
-                      <input
-                        type="text"
-                        class="form-control"
-                        v-model="customer.email"
-                        placeholder="Email"
-                      />
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
             </div>

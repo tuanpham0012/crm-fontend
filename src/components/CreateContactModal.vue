@@ -146,7 +146,7 @@ export default {
         content: '',
         link_record: '',
         note: '',
-        status: 1,
+        status: '',
       },
     }
   },

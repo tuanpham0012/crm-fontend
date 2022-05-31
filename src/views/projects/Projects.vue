@@ -106,6 +106,7 @@
               type="button"
               @click="toggleModalCreate()"
               class="btn btn-sm btn-gradient-info btn-icon-text"
+              v-if="$store.getters.getPositionID == 1 || $store.getters.getPositionID == 2"
             >
               <i class="mdi mdi-account-plus btn-icon-prepend"></i> Dự án mới
             </button>
@@ -196,7 +197,7 @@
                       <td>
                          {{ dateTime(project.start_at) }}
                       </td>
-                      <td>{{ dateTime(project.end) }}</td>
+                      <td>{{ dateTime(project.end_at) }}</td>
                       <td>{{ project.user.name ?? 'Đang cập nhật' }}</td>
                       <td>{{ project.project_status.status ?? 'Đang cập nhật' }}</td>
                       <td :class="{ 'updating' : project.tasks.length == 0 }">

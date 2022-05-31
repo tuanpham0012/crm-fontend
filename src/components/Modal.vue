@@ -1,7 +1,7 @@
 <template>
     <!-- modal @click.self="onCloseModal()" -->
           <div id="myModal" class="modal" >
-            <div class="modal-content modal-dialog-scrollable" :class=" size ? 'modal-large' : 'modal-small' ">
+            <div class="modal-content modal-dialog-scrollable" :class="{ 'modal-large': size, 'modal-small' : !size, 'min-height' : height}">
               <div class="modal-header">
                 <span class="modal-title">{{ title }}</span>
                 <span class="close" @click="onCloseModal()">&times;</span>
@@ -25,6 +25,10 @@ export default {
         size:{
           type: Boolean,
           default: true,
+        },
+        height:{
+          type: Boolean,
+          default: false,
         }
     },
     created(){
@@ -44,9 +48,10 @@ export default {
 <style scoped>
 
 .modal {
-  display: block; /* Hidden by default */
+  display: flex; /* Hidden by default */
+  align-items: center;
   position: fixed; /* Stay in place */
-  padding-top: 85px; /* Location of the box */
+  padding-top: 60px; /* Location of the box */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -62,6 +67,9 @@ export default {
   margin: auto;
   padding: 0.1rem;
   border: 1px solid #888;
+  height: max-content;
+}
+.min-height {
   min-height: 60%;
 }
 .modal-large{

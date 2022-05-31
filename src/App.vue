@@ -38,6 +38,7 @@ export default{
       this.$store.dispatch('getBaseData');
       this.$store.dispatch('getListNotification')
       this.getNotifications();
+      //this.getInfo();
     },
   	watch:{
         $route (to){
@@ -50,6 +51,11 @@ export default{
           if(this.$store.getters.getInfo)
             this.$store.dispatch('getListNotification')
         }, 30000);
+      },
+      getInfo(){
+        setInterval( () => {
+          if(localStorage.getItem('token')) this.$store.dispatch('getInfo', { token: localStorage.getItem('token') });
+        }, 10000);
       },
     },
   

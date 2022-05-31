@@ -381,9 +381,7 @@
                       <td @click="viewDetail(staff.id)">
                         <img
                           :src="
-                            staff.avatar
-                              ? staff.avatar
-                              : 'https://png.pngtree.com/png-clipart/20190904/original/pngtree-hand-drawn-flat-wind-user-avatar-icon-png-image_4492039.jpg'
+                            avatar_link(staff.avatar) || 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'
                           "
                           alt=""
                         />
@@ -537,6 +535,13 @@ export default {
     
   },
   methods: {
+    avatar_link(value){
+      if(value){
+        return url.server_url + value;
+      }else{
+        return null;
+      }
+    },
     checkAll: function () {
       if (this.select) {
         this.selectStaff = [];

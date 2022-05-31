@@ -17,13 +17,10 @@
                         <div class="avatar-img">
                           <img
                             :src="
-                              info.user.avatar
-                                ? info.user.avatar
-                                : 'https://www.pavilionweb.com/wp-content/uploads/2017/03/man-300x300.png'
+                              avatar_link(info.user.avatar) || 'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png'
                             "
                             alt=""
                           />
-                          <i class="mdi mdi-grease-pencil ic-avatar"></i>
                         </div>
                         <div class="avatar-name">
                           <p class="name">{{ info.user.name }}</p>
@@ -322,7 +319,7 @@
         class="btn btn-sm btn-gradient-secondary"
         @click="toggleCloseModal()"
       >
-        Hủy
+        Đóng
       </button>
     </template>
   </base-modal>
@@ -356,6 +353,13 @@ export default {
     },
     toggleCloseModal() {
       this.$emit("close-modal");
+    },
+    avatar_link(value){
+      if(value){
+        return url.server_url + value;
+      }else{
+        return null;
+      }
     },
     async UpdatePosition(id) {
       await axios({
@@ -392,9 +396,6 @@ export default {
             headers: {
               Authorization: "Bearer " + localStorage.getItem("token"),
               Accept: "application/json",
-            },
-            data: {
-              position_id: this.info.position_id,
             },
           })
             .then((res) => {
@@ -448,24 +449,11 @@ export default {
   opacity: 0.99;
   cursor: pointer;
 }
-.avatar img:hover + .mdi-grease-pencil {
-  display: block;
-}
 .avatar img:active {
   transform: scale(0.98);
 }
 .avatar-img {
   position: relative;
-}
-.ic-avatar {
-  font-size: 1.2rem;
-  background-color: rgb(240, 235, 235);
-  padding: 0.3rem 0.45rem;
-  border-radius: 50%;
-  position: absolute;
-  bottom: 1rem;
-  left: 72%;
-  display: none;
 }
 .general-information {
   margin: 1rem;

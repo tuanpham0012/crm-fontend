@@ -120,6 +120,7 @@ select{
 }
 .td-user img{
   margin-right: 0.235rem;
+  border-radius: 50% !important;
 }
 
 @keyframes slideInFromLeft {
@@ -148,7 +149,7 @@ select{
 }
 .list-select {
   background-color: #fdfdfd;
-  padding: 0.2rem 0.875rem;
+  padding: 0.2rem 0rem;
   max-height: 15rem;
   overflow: auto;
   position: absolute;
@@ -158,12 +159,11 @@ select{
   z-index: 111;
 }
 .list-select li {
-  padding: 0 0.3rem;
-  border-bottom: 1px solid #d8d3d3a1;
+  padding: 0 0.85rem;
   cursor: pointer;
 }
 .list-select li:hover {
-  background-color: #1e76e2;
+  background-color: #90bdf8;
   color: #ffffff;
 }
 .ic-dropdown {
@@ -288,4 +288,48 @@ select{
   justify-content: center;
   padding: 0.1rem;
   cursor: pointer;
+}
+
+/* button css */
+.btn-container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-more{
+  background-color: #ffffff00;
+  border: 0;
+  font-size: 1.523rem;
+  border-radius: 50%;
+}
+.btn-more:hover{
+  background-color: #faf6f6;
+}
+
+.btn-icon-danger{
+  padding: 0.25rem;
+  color: rgb(255, 119, 95);
+}
+.btn-icon-danger:hover{
+  color: rgb(255, 8, 0);
+  transform: scale(1.1);
+}
+
+.btn-icon-info{
+  padding: 0.25rem;
+  color: rgb(79, 126, 255);
+}
+.btn-icon-info:hover{
+  color: rgb(0, 81, 255);
+  transform: scale(1.1);
+}
+
+.btn-icon-success{
+  padding: 0.25rem;
+  color: rgb(79, 126, 255);
+}
+.btn-icon-success:hover{
+  color: rgb(0, 81, 255);
+  transform: scale(1.1);
 }
