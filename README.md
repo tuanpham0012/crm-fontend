@@ -7,7 +7,7 @@ This template should help get you started developing with Vue 3 in Vite. The tem
   - Pham Quoc Tuan
   - github:https://github.com/tuanpham0012
 
-# Backend: 
+# Back-end: 
   link: https://github.com/tuanpham0012/crm-backend.git
 
 #  Demo
